@@ -4,8 +4,8 @@ namespace qlm
 {
     enum class Status
     {
+        START_MENU,
         GAME_RUNNING,
-        GAME_PAUSED,
-        GAME_OVER
+        GAME_END
     };
 }
