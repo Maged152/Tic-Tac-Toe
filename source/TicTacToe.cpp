@@ -59,7 +59,7 @@ void qlm::TicTacToe::DrawStartMenu()
         draw_start_button(hover);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            // Add logic to start the game
+           status = Status::GAME_MENU;
         }
     }
 
@@ -70,6 +70,69 @@ void qlm::TicTacToe::DrawStartMenu()
         {
             status = Status::GAME_CLOSED;
            
+        }
+    }
+}
+
+void qlm::TicTacToe::DrawGameMenu()
+{
+     // Define button dimensions and positions
+    const int button_width = 320;
+    const int button_height = 90;
+
+    // Calculate button positions (side by side)
+    Rectangle x_button = {
+        width / 2 - button_width - 20, // Left button (X) is shifted left
+        250,                          // Y position (aligned)
+        button_width,
+        button_height
+    };
+
+    Rectangle o_button = {
+        width / 2 + 20, // Right button (O) is shifted right
+        250,            // Y position (aligned)
+        button_width,
+        button_height
+    };
+
+    // Draw buttons
+    const auto draw_x_button = [&](const Color c)
+    {
+        DrawRectangleRounded(x_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "X", {x_button.x + 130, x_button.y + 15}, 80, 10, GREEN);
+    };
+
+    const auto draw_o_button = [&](const Color c)
+    {
+        DrawRectangleRounded(o_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "O", {o_button.x + 130, o_button.y + 10}, 80, 10, RED);
+    };
+
+    // Draw the initial buttons
+    draw_x_button(text_color);
+    draw_o_button(text_color);
+
+    // Get mouse position
+    Vector2 mousePoint = GetMousePosition();
+
+    // Change button color on hover and handle clicks
+    if (CheckCollisionPointRec(mousePoint, x_button))
+    {
+        draw_x_button(hover);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            player_choice = Cell::X;
+            status = Status::GAME_RUNNING;
+        }
+    }
+
+    if (CheckCollisionPointRec(mousePoint, o_button))
+    {
+        draw_o_button(hover);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            player_choice = Cell::O;
+            status = Status::GAME_RUNNING;
         }
     }
 }
@@ -86,16 +149,15 @@ void qlm::TicTacToe::Start(int fps, const char *name)
     {
         BeginDrawing();
             ClearBackground(back_ground);
+            DrawTextEx(game_font, "XO GAME", {width / 2 - 200, 20}, 80, 10, text_color);
 
             if (status == Status::START_MENU)
-            {
-                // Draw title
-                DrawTextEx(game_font, "XO GAME", {width / 2 - 200, 20}, 80, 10, text_color);
+            {  
                 DrawStartMenu();
             }
             else if (status == Status::GAME_MENU)
             {
-
+                DrawGameMenu();
             }
             else if (status == Status::GAME_RUNNING)
             {

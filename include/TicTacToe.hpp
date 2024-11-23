@@ -23,11 +23,14 @@ namespace qlm
             Color hover {60, 60, 60, 255};
             Font game_font;
 
+            Cell player_choice = Cell::EMPTY;
+
         public:
             ~TicTacToe();
             void InitTextures();
             void Start(int fps, const char* name);
             void DrawStartMenu();
+            void DrawGameMenu();
 
     };
 }
