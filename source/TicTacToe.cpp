@@ -34,12 +34,21 @@ void qlm::TicTacToe::DrawStartMenu()
 
 
     // Draw buttons
-    DrawRectangleRounded(start_button, 0.6f, 20, text_color);
-    DrawRectangleRounded(exit_button, 0.6f, 20, text_color);
+    const auto draw_start_button = [&](const Color c)
+    {
+        DrawRectangleRounded(start_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "START", {start_button.x + 20, start_button.y + 10}, 80, 10, GREEN);
+    };
 
-    // Draw button text
-    DrawTextEx(game_font, "START", {start_button.x + 20, start_button.y + 10}, 80, 10, GREEN);
-    DrawTextEx(game_font, "EXIT", {exit_button.x + 70, exit_button.y + 10}, 80, 10, RED);
+    const auto draw_exit_button = [&](const Color c)
+    {
+        DrawRectangleRounded(exit_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "EXIT", {exit_button.x + 70, exit_button.y + 10}, 80, 10, RED);
+    };
+
+    draw_start_button(text_color);
+    draw_exit_button(text_color);
+
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -47,18 +56,19 @@ void qlm::TicTacToe::DrawStartMenu()
     // Change button color on hover
     if (CheckCollisionPointRec(mousePoint, start_button))
     {
+        draw_start_button(hover);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             // Add logic to start the game
-            DrawText("Start Button Clicked", width / 2 - 120, height - 50, 20, GREEN);
         }
     }
 
     if (CheckCollisionPointRec(mousePoint, exit_button))
     {
+        draw_exit_button(hover);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            // Add logic to exit the game
+            status = Status::GAME_CLOSED;
            
         }
     }
@@ -83,13 +93,21 @@ void qlm::TicTacToe::Start(int fps, const char *name)
                 DrawTextEx(game_font, "XO GAME", {width / 2 - 200, 20}, 80, 10, text_color);
                 DrawStartMenu();
             }
+            else if (status == Status::GAME_MENU)
+            {
+
+            }
             else if (status == Status::GAME_RUNNING)
+            {
+
+            }
+            else if (status == Status::GAME_END)
             {
 
             }
             else 
             {
-               
+               CloseWindow();
             }
         EndDrawing();
     }

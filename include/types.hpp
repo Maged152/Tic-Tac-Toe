@@ -5,8 +5,10 @@ namespace qlm
     enum class Status
     {
         START_MENU,
+        GAME_MENU,
         GAME_RUNNING,
-        GAME_END
+        GAME_END,
+        GAME_CLOSED
     };
 
     enum class Cell
