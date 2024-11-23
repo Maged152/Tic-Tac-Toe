@@ -27,6 +27,7 @@ namespace qlm
         public:
             Grid();
             void Set(const int c, const int r, const qlm::Cell value);
+            void Set(const qlm::Cell value);
             Cell Get(const int c, const int r);
     };
 }

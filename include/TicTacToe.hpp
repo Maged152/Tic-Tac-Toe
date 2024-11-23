@@ -1,5 +1,6 @@
 #pragma once
 #include "types.hpp"
+#include <raylib.h>
 
 namespace qlm
 {
@@ -17,10 +18,15 @@ namespace qlm
 
             Status status = Status::START_MENU;
 
+            Color back_ground {20, 189, 172, 255};
+            Color text_color {84, 84, 84, 255};
+            Font game_font;
+
         public:
             ~TicTacToe();
-
+            void InitTextures();
             void Start(int fps, const char* name);
+            void DrawStartMenu();
 
     };
 }
