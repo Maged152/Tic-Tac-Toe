@@ -21,9 +21,11 @@ namespace qlm
 
     class Grid
     {
-        private:
+        public:
             static const int rows = 3;
             static const int cols = 3;
+
+        private:
             Cell grid[cols][rows];
 
         public:

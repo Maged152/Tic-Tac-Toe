@@ -22,8 +22,10 @@ namespace qlm
             Color text_color {84, 84, 84, 255};
             Color hover {60, 60, 60, 255};
             Font game_font;
+            Font grid_font;
 
             Cell player_choice = Cell::EMPTY;
+            Grid game_grid;
 
         public:
             ~TicTacToe();
@@ -31,6 +33,7 @@ namespace qlm
             void Start(int fps, const char* name);
             void DrawStartMenu();
             void DrawGameMenu();
+            void DrawGrid();
 
     };
 }

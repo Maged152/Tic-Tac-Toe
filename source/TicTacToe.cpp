@@ -3,12 +3,14 @@
 qlm::TicTacToe::~TicTacToe()
 {
     UnloadFont(game_font);
+    UnloadFont(grid_font);
     CloseWindow();
 }
 
 void qlm::TicTacToe::InitTextures()
 {
     game_font = LoadFont("resources/orange juice 2.0.ttf");
+    grid_font = LoadFont("resources/Surfing Capital.ttf");
 }
 
 void qlm::TicTacToe::DrawStartMenu()
@@ -137,6 +139,51 @@ void qlm::TicTacToe::DrawGameMenu()
     }
 }
 
+void qlm::TicTacToe::DrawGrid()
+{
+    constexpr int cell_size = 150;
+    constexpr float x_offset = width / 2 - 253;
+    constexpr float y_offset = height / 2 - 180;
+
+    // Draw vertical lines
+    for (int i = 1; i < game_grid.cols; i++)
+    {
+        DrawLineEx({i * cell_size + x_offset, y_offset}, 
+                   {i * cell_size + x_offset, y_offset + game_grid.cols * cell_size},
+                   7, text_color);
+    }
+
+    // Draw horizontal lines
+    for (int i = 1; i < game_grid.rows; i++)
+    {
+        DrawLineEx({x_offset, i * cell_size + y_offset}, 
+                   {game_grid.rows * cell_size + x_offset, y_offset + i * cell_size},
+                   7, text_color);
+    }
+
+    // Loop through the grid array and draw X or O
+    for (int col = 0; col < game_grid.cols; col++)
+    {
+        for (int row = 0; row < game_grid.rows; row++)
+        {
+            // Calculate the center of the current cell
+            const float x_pos = col * cell_size + x_offset + 40;
+            const float y_pos = row * cell_size + y_offset + 20;
+
+            const Cell cell_value = game_grid.Get(col, row);
+
+            if (cell_value == Cell::X)
+            {
+                DrawTextEx(grid_font, "X", {x_pos, y_pos}, 120, 10, GREEN);
+            }
+            else if (cell_value == Cell::O)
+            {
+                DrawTextEx(grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
+            }
+        }
+    }
+}
+
 void qlm::TicTacToe::Start(int fps, const char *name)
 {
     InitWindow(width, height, name);
@@ -161,7 +208,7 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             }
             else if (status == Status::GAME_RUNNING)
             {
-
+                DrawGrid();
             }
             else if (status == Status::GAME_END)
             {
