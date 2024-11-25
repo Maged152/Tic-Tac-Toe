@@ -139,25 +139,26 @@ void qlm::TicTacToe::DrawGameMenu()
     }
 }
 
+void qlm::TicTacToe::Toggle()
+{
+    turn = turn == Cell::X ? Cell::O : Cell::X;
+}
+
 void qlm::TicTacToe::DrawGrid()
 {
-    constexpr int cell_size = 150;
-    constexpr float x_offset = width / 2 - 253;
-    constexpr float y_offset = height / 2 - 180;
-
     // Draw vertical lines
     for (int i = 1; i < game_grid.cols; i++)
     {
-        DrawLineEx({i * cell_size + x_offset, y_offset}, 
-                   {i * cell_size + x_offset, y_offset + game_grid.cols * cell_size},
+        DrawLineEx({i * grid_loc.width + grid_loc.x, grid_loc.y}, 
+                   {i * grid_loc.width + grid_loc.x, grid_loc.y + game_grid.cols * grid_loc.height},
                    7, text_color);
     }
 
     // Draw horizontal lines
     for (int i = 1; i < game_grid.rows; i++)
     {
-        DrawLineEx({x_offset, i * cell_size + y_offset}, 
-                   {game_grid.rows * cell_size + x_offset, y_offset + i * cell_size},
+        DrawLineEx({grid_loc.x, i * grid_loc.height + grid_loc.y}, 
+                   {game_grid.rows * grid_loc.width + grid_loc.x, grid_loc.y + i * grid_loc.height},
                    7, text_color);
     }
 
@@ -167,8 +168,8 @@ void qlm::TicTacToe::DrawGrid()
         for (int row = 0; row < game_grid.rows; row++)
         {
             // Calculate the center of the current cell
-            const float x_pos = col * cell_size + x_offset + 40;
-            const float y_pos = row * cell_size + y_offset + 20;
+            const float x_pos = row * grid_loc.width + grid_loc.x + 40;
+            const float y_pos = col * grid_loc.height + grid_loc.y + 20;
 
             const Cell cell_value = game_grid.Get(col, row);
 
@@ -179,6 +180,42 @@ void qlm::TicTacToe::DrawGrid()
             else if (cell_value == Cell::O)
             {
                 DrawTextEx(grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
+            }
+        }
+    }
+}
+
+void qlm::TicTacToe::UpdateGrid()
+{
+    // Get mouse position
+    const Vector2 mouse_Point = GetMousePosition();
+
+     for (int c = 0; c < game_grid.cols; c++)
+    {
+        for (int r = 0; r < game_grid.rows; r++)
+        {
+            const Cell cur_cell = game_grid.Get(c, r);
+
+            if (cur_cell == Cell::EMPTY)
+            {
+                Rectangle cell = {
+                    r * grid_loc.width + grid_loc.x, 
+                    c * grid_loc.height + grid_loc.y,
+                    (float)grid_loc.width,
+                    (float)grid_loc.height
+                };
+
+                // Check if the mouse is over this cell
+                if (CheckCollisionPointRec(mouse_Point, cell))
+                {
+                    DrawRectangleRec(cell, Fade(hover, 0.5f)); // hover
+
+                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                    {
+                        game_grid.Set(c, r, turn);
+                        Toggle();
+                    }
+                }
             }
         }
     }
@@ -209,6 +246,7 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             else if (status == Status::GAME_RUNNING)
             {
                 DrawGrid();
+                UpdateGrid();
             }
             else if (status == Status::GAME_END)
             {

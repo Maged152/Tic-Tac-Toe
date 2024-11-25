@@ -14,7 +14,7 @@ namespace qlm
             static const int padding_height = 50;
 
             static const int cells = 9;
-            static const int cell_size = 100;
+            static const int cell_size = 150;
 
             Status status = Status::START_MENU;
 
@@ -25,7 +25,9 @@ namespace qlm
             Font grid_font;
 
             Cell player_choice = Cell::EMPTY;
+            Cell turn = Cell::X;
             Grid game_grid;
+            Rectangle grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size};
 
         public:
             ~TicTacToe();
@@ -33,7 +35,9 @@ namespace qlm
             void Start(int fps, const char* name);
             void DrawStartMenu();
             void DrawGameMenu();
+            void Toggle();
             void DrawGrid();
+            void UpdateGrid();
 
     };
 }
