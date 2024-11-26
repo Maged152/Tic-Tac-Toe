@@ -61,7 +61,7 @@ void qlm::TicTacToe::DrawStartMenu()
         draw_start_button(hover);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           status = Status::GAME_MENU;
+           status = Status::GAME_TYPE;
         }
     }
 
@@ -76,7 +76,71 @@ void qlm::TicTacToe::DrawStartMenu()
     }
 }
 
-void qlm::TicTacToe::DrawGameMenu()
+void qlm::TicTacToe::DrawGameType()
+{
+    // Define button dimensions and positions
+    const int button_width = 600;
+    const int button_height = 110;
+
+    // Calculate button positions
+    Rectangle single_button = {
+        width / 2 - button_width / 2,
+        170, 
+        button_width,
+        button_height
+    };
+
+    Rectangle multi_button = {
+        width / 2 - button_width / 2,
+        330,
+        button_width,
+        button_height
+    };
+
+
+    // Draw buttons
+    const auto draw_single_button = [&](const Color c)
+    {
+        DrawRectangleRounded(single_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "Single Player", {single_button.x + 20, single_button.y + 10}, 80, 10, LIGHTGRAY);
+    };
+
+    const auto draw_multi_button = [&](const Color c)
+    {
+        DrawRectangleRounded(multi_button, 0.6f, 20, c);
+        DrawTextEx(game_font, "Multi Player", {multi_button.x + 50, multi_button.y + 10}, 80, 10, LIGHTGRAY);
+    };
+
+    draw_single_button(text_color);
+    draw_multi_button(text_color);
+
+
+    // Get mouse position
+    Vector2 mousePoint = GetMousePosition();
+
+    // Change button color on hover
+    if (CheckCollisionPointRec(mousePoint, single_button))
+    {
+        draw_single_button(hover);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            game_type = GameType::SINGLE_PLAYER;
+            status = Status::GAME_CHOICE;
+        }
+    }
+
+    if (CheckCollisionPointRec(mousePoint, multi_button))
+    {
+        draw_multi_button(hover);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            game_type = GameType::MULTI_PLAYER;
+            status = Status::GAME_RUNNING;
+        }
+    }
+}
+
+void qlm::TicTacToe::DrawGameChoice()
 {
      // Define button dimensions and positions
     const int button_width = 320;
@@ -214,11 +278,17 @@ void qlm::TicTacToe::UpdateGrid()
                     {
                         game_grid.Set(c, r, turn);
                         Toggle();
+                        round++;
                     }
                 }
             }
         }
     }
+}
+
+void qlm::TicTacToe::IsGameOver()
+{
+    
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -239,16 +309,24 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             {  
                 DrawStartMenu();
             }
-            else if (status == Status::GAME_MENU)
+            else if (status == Status::GAME_TYPE)
             {
-                DrawGameMenu();
+                DrawGameType();
+            }
+            else if (status == Status::GAME_CHOICE)
+            {
+                DrawGameChoice();
             }
             else if (status == Status::GAME_RUNNING)
             {
                 DrawGrid();
                 UpdateGrid();
+                if (round > 4)
+                {
+                    IsGameOver();
+                }
             }
-            else if (status == Status::GAME_END)
+            else if (status == Status::GAME_OVER)
             {
 
             }

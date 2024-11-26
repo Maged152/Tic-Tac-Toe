@@ -26,6 +26,9 @@ namespace qlm
 
             Cell player_choice = Cell::EMPTY;
             Cell turn = Cell::X;
+            GameType game_type;
+            Cell winner = Cell::EMPTY;
+            int round = 0;
             Grid game_grid;
             Rectangle grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size};
 
@@ -34,10 +37,11 @@ namespace qlm
             void InitTextures();
             void Start(int fps, const char* name);
             void DrawStartMenu();
-            void DrawGameMenu();
+            void DrawGameType();
+            void DrawGameChoice();
             void Toggle();
             void DrawGrid();
             void UpdateGrid();
-
+            void IsGameOver();
     };
 }

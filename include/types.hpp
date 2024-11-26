@@ -5,9 +5,10 @@ namespace qlm
     enum class Status
     {
         START_MENU,
-        GAME_MENU,
+        GAME_TYPE,
+        GAME_CHOICE,
         GAME_RUNNING,
-        GAME_END,
+        GAME_OVER,
         GAME_CLOSED
     };
 
@@ -16,6 +17,12 @@ namespace qlm
         X,
         O,
         EMPTY
+    };
+
+    enum class GameType
+    {
+        SINGLE_PLAYER,
+        MULTI_PLAYER
     };
 
 
