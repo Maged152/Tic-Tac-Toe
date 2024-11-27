@@ -102,13 +102,13 @@ void qlm::TicTacToe::DrawGameType()
     const auto draw_single_button = [&](const Color c)
     {
         DrawRectangleRounded(single_button, 0.6f, 20, c);
-        DrawTextEx(game_font, "Single Player", {single_button.x + 20, single_button.y + 10}, 80, 10, LIGHTGRAY);
+        DrawTextEx(game_font, "Single Player", {single_button.x + 20, single_button.y + 10}, 80, 10, YELLOW);
     };
 
     const auto draw_multi_button = [&](const Color c)
     {
         DrawRectangleRounded(multi_button, 0.6f, 20, c);
-        DrawTextEx(game_font, "Multi Player", {multi_button.x + 50, multi_button.y + 10}, 80, 10, LIGHTGRAY);
+        DrawTextEx(game_font, "Multi Player", {multi_button.x + 50, multi_button.y + 10}, 80, 10, YELLOW);
     };
 
     draw_single_button(text_color);
@@ -278,6 +278,7 @@ void qlm::TicTacToe::UpdateGrid()
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
                         game_grid.Set(c, r, turn);
+                        last_move.Set(c, r);
                         Toggle();
                         round++;
                     }
@@ -289,7 +290,35 @@ void qlm::TicTacToe::UpdateGrid()
 
 void qlm::TicTacToe::IsGameOver()
 {
+    int r = last_move.r;
+    int c = last_move.c;
     
+    // Check the row of the last move
+    if (game_grid.Get(c, 0) == game_grid.Get(c, 1) && game_grid.Get(c, 1) == game_grid.Get(c, 2))
+    {
+        winner = game_grid.Get(c, 0);
+    }
+    // Check the column of the last move
+    else if (game_grid.Get(0, r) == game_grid.Get(1, r) && game_grid.Get(1, r) == game_grid.Get(2, r))
+    {
+        winner = game_grid.Get(0, r);
+    }
+    // Check the main diagonal if the last move is on it
+    else if (c == r)
+    {
+        if (game_grid.Get(0, 0) == game_grid.Get(1, 1) && game_grid.Get(1, 1) == game_grid.Get(2, 2))
+        {
+            winner = game_grid.Get(0, 0);
+        }
+    }
+    // Check the anti-diagonal if the last move is on it
+    else if (r + c == 2)
+    {
+        if (game_grid.Get(2, 0) == game_grid.Get(1, 1) && game_grid.Get(1, 1) == game_grid.Get(0, 2))
+        {
+            winner = game_grid.Get(0, 0);
+        }
+    }
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -325,11 +354,17 @@ void qlm::TicTacToe::Start(int fps, const char *name)
                 if (round > 4)
                 {
                     IsGameOver();
+
+                    if (winner != Cell::EMPTY)
+                    {
+                        status = Status::GAME_OVER;
+                    }
                 }
             }
             else if (status == Status::GAME_OVER)
             {
-
+                DrawGrid();
+                // Game over menu, line of the win ?!
             }
             else 
             {

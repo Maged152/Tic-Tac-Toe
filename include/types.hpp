@@ -25,6 +25,17 @@ namespace qlm
         MULTI_PLAYER
     };
 
+    struct Location
+    {
+        int c;
+        int r;
+
+        void Set(int c_loc, int r_loc)
+        {
+            c = c_loc;
+            r = r_loc;
+        }
+    };
 
     class Grid
     {

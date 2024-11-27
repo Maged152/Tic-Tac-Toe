@@ -29,6 +29,7 @@ namespace qlm
             GameType game_type;
             Cell winner = Cell::EMPTY;
             int round = 0;
+            Location last_move;
             Grid game_grid;
             Rectangle grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size};
 
