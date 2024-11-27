@@ -253,8 +253,9 @@ void qlm::TicTacToe::UpdateGrid()
 {
     // Get mouse position
     const Vector2 mouse_Point = GetMousePosition();
+    const Color hover_color = turn == Cell::X ? GREEN : RED;
 
-     for (int c = 0; c < game_grid.cols; c++)
+    for (int c = 0; c < game_grid.cols; c++)
     {
         for (int r = 0; r < game_grid.rows; r++)
         {
@@ -272,7 +273,7 @@ void qlm::TicTacToe::UpdateGrid()
                 // Check if the mouse is over this cell
                 if (CheckCollisionPointRec(mouse_Point, cell))
                 {
-                    DrawRectangleRec(cell, Fade(hover, 0.5f)); // hover
+                    DrawRectangleRec(cell, Fade(hover_color, 0.5f)); // hover
 
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
