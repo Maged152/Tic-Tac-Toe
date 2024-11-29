@@ -404,6 +404,7 @@ void qlm::TicTacToe::Reset(const Status s)
     winner = Cell::EMPTY;
     round = 0;
     game_grid.Set(Cell::EMPTY);
+    turn = Cell::X;
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
