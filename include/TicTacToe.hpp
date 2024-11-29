@@ -44,5 +44,7 @@ namespace qlm
             void DrawGrid();
             void UpdateGrid();
             void IsGameOver();
+            void DrawGameOverMenu();
+            void Reset();
     };
 }

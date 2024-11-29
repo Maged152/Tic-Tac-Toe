@@ -1,4 +1,5 @@
 #include "TicTacToe.hpp"
+#include <string>
 
 qlm::TicTacToe::~TicTacToe()
 {
@@ -319,6 +320,84 @@ void qlm::TicTacToe::IsGameOver()
             winner = game_grid.Get(0, 0);
         }
     }
+
+    if (winner != Cell::EMPTY)
+    {
+        status = Status::GAME_OVER;
+    }
+}
+
+void qlm::TicTacToe::DrawGameOverMenu()
+{
+    // Text for winner or draw
+    std::string result_text;
+    if (winner == Cell::X)
+        result_text = "Player X Wins!";
+    else if (winner == Cell::O)
+        result_text = "Player O Wins!";
+    else
+        result_text = "It's a Draw!";
+
+    // Define button dimensions and positions
+    const int button_width = 350;
+    const int button_height = 80;
+
+    Rectangle replay_button = {
+        width / 2 - button_width - 20, 
+        height / 2 + 20, 
+        button_width, 
+        button_height
+    };
+
+    Rectangle main_button = {
+        width / 2 + 20, 
+        height / 2 + 20, 
+        button_width, 
+        button_height
+    };
+
+    // Draw the result text
+    DrawTextEx(game_font, result_text.c_str(), 
+               {width / 2 - MeasureTextEx(game_font, result_text.c_str(), 50, 5).x / 2, height / 2 - 100}, 
+               50, 5, hover);
+
+    // Helper function to draw a button
+    auto DrawButton = [&](const char* text, Rectangle button, const Color color, const Color textColor) {
+        DrawRectangleRounded(button, 0.4f, 10,  Fade(color, 0.7f));
+        Vector2 text_size = MeasureTextEx(game_font, text, 30, 5);
+        DrawTextEx(game_font, text, 
+                   {button.x + button.width / 2 - text_size.x / 2, button.y + button.height / 2 - text_size.y / 2}, 
+                   30, 5, textColor);
+    };
+
+    // Draw buttons with default colors
+    DrawButton("Replay", replay_button, text_color, GREEN);
+    DrawButton("Main Menu", main_button, text_color, RED);
+
+    // Get mouse position
+    Vector2 mousePoint = GetMousePosition();
+
+    // Handle hover and clicks for Replay button
+    if (CheckCollisionPointRec(mousePoint, replay_button))
+    {
+        DrawButton("Replay", replay_button, hover, GREEN);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            // Replay logic here
+           // ResetGame(); // Example function to reset the game
+        }
+    }
+
+    // Handle hover and clicks for Main Menu button
+    if (CheckCollisionPointRec(mousePoint, main_button))
+    {
+        DrawButton("Main Menu", main_button, hover, RED);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            // Main menu logic here
+           // GoToMainMenu(); // Example function to go to the main menu
+        }
+    }
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -355,7 +434,8 @@ void qlm::TicTacToe::Start(int fps, const char *name)
                 {
                     IsGameOver();
 
-                    if (winner != Cell::EMPTY)
+                    // check for draw
+                    if (round == 9)
                     {
                         status = Status::GAME_OVER;
                     }
@@ -364,6 +444,7 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             else if (status == Status::GAME_OVER)
             {
                 DrawGrid();
+                DrawGameOverMenu();
                 // Game over menu, line of the win ?!
             }
             else 
