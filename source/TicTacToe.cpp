@@ -383,8 +383,7 @@ void qlm::TicTacToe::DrawGameOverMenu()
         DrawButton("Replay", replay_button, hover, GREEN);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            // Replay logic here
-           // ResetGame(); // Example function to reset the game
+            Reset(Status::GAME_RUNNING);
         }
     }
 
@@ -394,10 +393,17 @@ void qlm::TicTacToe::DrawGameOverMenu()
         DrawButton("Main Menu", main_button, hover, RED);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            // Main menu logic here
-           // GoToMainMenu(); // Example function to go to the main menu
+            Reset(Status::START_MENU);
         }
     }
+}
+
+void qlm::TicTacToe::Reset(const Status s)
+{
+    status = s;
+    winner = Cell::EMPTY;
+    round = 0;
+    game_grid.Set(Cell::EMPTY);
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -445,7 +451,6 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             {
                 DrawGrid();
                 DrawGameOverMenu();
-                // Game over menu, line of the win ?!
             }
             else 
             {
