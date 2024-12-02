@@ -291,35 +291,7 @@ void qlm::TicTacToe::UpdateGrid()
 
 void qlm::TicTacToe::IsGameOver()
 {
-    int r = last_move.r;
-    int c = last_move.c;
-    
-    // Check the row of the last move
-    if (game_grid.Get(c, 0) == game_grid.Get(c, 1) && game_grid.Get(c, 1) == game_grid.Get(c, 2))
-    {
-        winner = game_grid.Get(c, 0);
-    }
-    // Check the column of the last move
-    else if (game_grid.Get(0, r) == game_grid.Get(1, r) && game_grid.Get(1, r) == game_grid.Get(2, r))
-    {
-        winner = game_grid.Get(0, r);
-    }
-    // Check the main diagonal if the last move is on it
-    else if (c == r)
-    {
-        if (game_grid.Get(0, 0) == game_grid.Get(1, 1) && game_grid.Get(1, 1) == game_grid.Get(2, 2))
-        {
-            winner = game_grid.Get(0, 0);
-        }
-    }
-    // Check the anti-diagonal if the last move is on it
-    else if (r + c == 2)
-    {
-        if (game_grid.Get(2, 0) == game_grid.Get(1, 1) && game_grid.Get(1, 1) == game_grid.Get(0, 2))
-        {
-            winner = game_grid.Get(0, 0);
-        }
-    }
+    winner = game_grid.IsGameOver(last_move);
 
     if (winner != Cell::EMPTY)
     {
