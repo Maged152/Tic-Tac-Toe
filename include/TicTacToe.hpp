@@ -41,11 +41,13 @@ namespace qlm
             void DrawStartMenu();
             void DrawGameType();
             void DrawGameChoice();
-            void Toggle();
+            Cell Toggle(const Cell input);
             void DrawGrid();
             void UpdateGrid();
             void IsGameOver();
             void DrawGameOverMenu();
             void Reset(const Status s);
+            int MiniMax(Grid board, const Cell player, const Location player_move, const int cur_round);
+            void BestMove();
     };
 }

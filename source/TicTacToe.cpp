@@ -1,5 +1,7 @@
 #include "TicTacToe.hpp"
 #include <string>
+#include <cmath>
+#include <iostream>
 
 qlm::TicTacToe::~TicTacToe()
 {
@@ -204,9 +206,9 @@ void qlm::TicTacToe::DrawGameChoice()
     }
 }
 
-void qlm::TicTacToe::Toggle()
+qlm::Cell qlm::TicTacToe::Toggle(const qlm::Cell input)
 {
-    turn = turn == Cell::X ? Cell::O : Cell::X;
+    return input == Cell::X ? Cell::O : Cell::X;
 }
 
 void qlm::TicTacToe::DrawGrid()
@@ -280,7 +282,7 @@ void qlm::TicTacToe::UpdateGrid()
                     {
                         game_grid.Set(c, r, turn);
                         last_move.Set(c, r);
-                        Toggle();
+                        turn = Toggle(turn);
                         round++;
                     }
                 }
@@ -379,6 +381,115 @@ void qlm::TicTacToe::Reset(const Status s)
     turn = Cell::X;
 }
 
+int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::Location player_move, int cur_round)
+{
+    const auto GetScore = [](const qlm::Cell game_winner)
+    {
+        if (game_winner == qlm::Cell::X)
+        {
+            return 1;
+        }
+        else if (game_winner == qlm::Cell::O)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    };
+
+    const int score = GetScore(board.IsGameOver(player_move));
+
+    // check if the game is over
+    if (score != 0 || cur_round == 9)
+    {
+        return score;   
+    }
+
+    int best_score = player == qlm::Cell::X ? -10 : 10;
+
+    // Iterate over all possible moves
+    for (int r = 0; r < board.rows; r++) 
+    {
+        for (int c = 0; c < board.cols; c++) 
+        {
+            if (board.Get(c, r) == qlm::Cell::EMPTY)
+            {
+                // make a move
+                board.Set(c, r, player);
+
+                const int move_score = MiniMax(game_grid, Toggle(player), {c, r}, cur_round + 1);
+
+                // undo the move
+                board.Set(c, r, qlm::Cell::EMPTY);
+
+                if (player == qlm::Cell::X)
+                {
+                    best_score = std::max(move_score, best_score);
+                }
+                else
+                {
+                    best_score = std::min(move_score, best_score);
+                }
+            }
+        }
+    }
+
+    return best_score;
+}
+
+void qlm::TicTacToe::BestMove()
+{
+    qlm::Location best_move {};
+
+    const qlm::Cell computer_choice = Toggle(player_choice);
+    int best_score = computer_choice == qlm::Cell::X ? -10 : 10;
+
+    // Iterate over all possible moves
+    for (int r = 0; r < game_grid.rows; r++) 
+    {
+        for (int c = 0; c < game_grid.cols; c++) 
+        {
+            if (game_grid.Get(c, r) == qlm::Cell::EMPTY)
+            {
+                // make a move
+                game_grid.Set(c, r, computer_choice);
+
+                const int move_score = MiniMax(game_grid, player_choice, {c, r}, round + 1);
+
+                // undo the move
+                game_grid.Set(c, r, qlm::Cell::EMPTY);
+
+                // Update the best score and move based on the player
+                if (computer_choice == qlm::Cell::X) 
+                { 
+                    // Maximize score for X
+                    if (move_score > best_score) {
+                        best_score = move_score;
+                        best_move.Set(c, r);
+                    }
+                } 
+                else 
+                { 
+                    // Minimize score for O
+                    if (move_score < best_score) 
+                    {
+                        best_score = move_score;
+                        best_move.Set(c, r);
+                    }
+                }
+            }
+        }
+    }
+
+    // do the move
+    game_grid.Set(best_move.c, best_move.r, computer_choice);
+    last_move.Set(best_move.c, best_move.r);
+    turn = Toggle(turn);
+    round++;
+}
+
 void qlm::TicTacToe::Start(int fps, const char *name)
 {
     InitWindow(width, height, name);
@@ -408,7 +519,16 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             else if (status == Status::GAME_RUNNING)
             {
                 DrawGrid();
-                UpdateGrid();
+                if (game_type == qlm::GameType::MULTI_PLAYER)
+                {
+                    UpdateGrid();
+                }
+                else
+                {
+                    if (turn == player_choice) UpdateGrid();
+                    else BestMove();
+                }
+                
                 if (round > 4)
                 {
                     IsGameOver();
