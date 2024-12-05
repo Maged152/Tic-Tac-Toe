@@ -5,6 +5,17 @@ qlm::Grid::Grid()
     this->Set(qlm::Cell::EMPTY);
 }
 
+qlm::Grid::Grid(const qlm::Grid &other)
+{
+    for (int c = 0; c < cols; ++c)
+    {
+        for (int r = 0; r < rows; ++r)
+        {
+            grid[c][r] = other.grid[c][r];
+        }
+    }
+}
+
 void qlm::Grid::Set(const int c, const int r, const qlm::Cell value)
 {
     // safer to check range of the input but no need for it here

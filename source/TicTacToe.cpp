@@ -419,7 +419,7 @@ int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::
                 // make a move
                 board.Set(c, r, player);
 
-                const int move_score = MiniMax(game_grid, Toggle(player), {c, r}, cur_round + 1);
+                const int move_score = MiniMax(board, Toggle(player), {c, r}, cur_round + 1);
 
                 // undo the move
                 board.Set(c, r, qlm::Cell::EMPTY);
