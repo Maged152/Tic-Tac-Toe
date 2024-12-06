@@ -37,6 +37,12 @@ namespace qlm
         }
     };
 
+    struct MMOut
+    {
+        int score;
+        Location move;
+    };
+
     class Grid
     {
         public:

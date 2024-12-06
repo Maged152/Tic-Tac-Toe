@@ -383,20 +383,11 @@ void qlm::TicTacToe::Reset(const Status s)
 
 int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::Location player_move, int cur_round)
 {
-    const auto GetScore = [](const qlm::Cell game_winner)
+    const auto GetScore = [cur_round](const qlm::Cell game_winner)
     {
-        if (game_winner == qlm::Cell::X)
-        {
-            return 1;
-        }
-        else if (game_winner == qlm::Cell::O)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
+        if (game_winner == qlm::Cell::X) return 10 - cur_round;  // Favor faster wins
+        if (game_winner == qlm::Cell::O) return cur_round - 10;  // Favor slower losses
+        return 0; // Draw or ongoing game
     };
 
     const int score = GetScore(board.IsGameOver(player_move));
@@ -407,7 +398,7 @@ int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::
         return score;   
     }
 
-    int best_score = player == qlm::Cell::X ? -10 : 10;
+    int best_score = player == qlm::Cell::X ? -1000 : 1000;
 
     // Iterate over all possible moves
     for (int r = 0; r < board.rows; r++) 
@@ -439,31 +430,45 @@ int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::
     return best_score;
 }
 
-void qlm::TicTacToe::BestMove()
+qlm::MMOut qlm::TicTacToe::MiniMax2(Grid board, const Cell player, const Location player_move, const int cur_round)
 {
+    const auto GetScore = [cur_round](const qlm::Cell game_winner)
+    {
+        if (game_winner == qlm::Cell::X) return 10 - cur_round;  // Favor faster wins
+        if (game_winner == qlm::Cell::O) return cur_round - 10;  // Favor slower losses
+        return 0; // Draw or ongoing game
+    };
+
+    qlm::MMOut out;
+    out.score = GetScore(board.IsGameOver(player_move));
+
+    // check if the game is over
+    if (out.score != 0 || cur_round == 9)
+    {
+        return out;   
+    }
+
+    int best_score = player == qlm::Cell::X ? -1000 : 1000;
     qlm::Location best_move {};
 
-    const qlm::Cell computer_choice = Toggle(player_choice);
-    int best_score = computer_choice == qlm::Cell::X ? -10 : 10;
-
     // Iterate over all possible moves
-    for (int r = 0; r < game_grid.rows; r++) 
+    for (int r = 0; r < board.rows; r++) 
     {
-        for (int c = 0; c < game_grid.cols; c++) 
+        for (int c = 0; c < board.cols; c++) 
         {
-            if (game_grid.Get(c, r) == qlm::Cell::EMPTY)
+            if (board.Get(c, r) == qlm::Cell::EMPTY)
             {
                 // make a move
-                game_grid.Set(c, r, computer_choice);
+                board.Set(c, r, player);
 
-                const int move_score = MiniMax(game_grid, player_choice, {c, r}, round + 1);
+                auto res = MiniMax2(board, Toggle(player), {c, r}, cur_round + 1);
+                const int move_score = res.score;
 
                 // undo the move
-                game_grid.Set(c, r, qlm::Cell::EMPTY);
+                //board.Set(c, r, qlm::Cell::EMPTY);
 
-                // Update the best score and move based on the player
-                if (computer_choice == qlm::Cell::X) 
-                { 
+                if (player == qlm::Cell::X)
+                {
                     // Maximize score for X
                     if (move_score > best_score) {
                         best_score = move_score;
@@ -483,9 +488,61 @@ void qlm::TicTacToe::BestMove()
         }
     }
 
+    out.move = best_move;
+    out.score = best_score;
+
+    return out;
+}
+
+void qlm::TicTacToe::BestMove()
+{
+    // qlm::Location best_move {};
+
+    // const qlm::Cell computer_choice = Toggle(player_choice);
+    // int best_score = computer_choice == qlm::Cell::X ? -1000 : 1000;
+
+    // // Iterate over all possible moves
+    // for (int r = 0; r < game_grid.rows; r++) 
+    // {
+    //     for (int c = 0; c < game_grid.cols; c++) 
+    //     {
+    //         if (game_grid.Get(c, r) == qlm::Cell::EMPTY)
+    //         {
+    //             // make a move
+    //             game_grid.Set(c, r, computer_choice);
+
+    //             const int move_score = MiniMax(game_grid, player_choice, {c, r}, round + 1);
+
+    //             // undo the move
+    //             game_grid.Set(c, r, qlm::Cell::EMPTY);
+
+    //             // Update the best score and move based on the player
+    //             if (computer_choice == qlm::Cell::X) 
+    //             { 
+    //                 // Maximize score for X
+    //                 if (move_score > best_score) {
+    //                     best_score = move_score;
+    //                     best_move.Set(c, r);
+    //                 }
+    //             } 
+    //             else 
+    //             { 
+    //                 // Minimize score for O
+    //                 if (move_score < best_score) 
+    //                 {
+    //                     best_score = move_score;
+    //                     best_move.Set(c, r);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    const auto best_move = MiniMax2(game_grid, Toggle(player_choice), last_move, round);
+
+    std::cout << "The AI decided to go c = " << best_move.move.c << " , r = " << best_move.move.r << " ,with score = " << best_move.score << "\n"; 
     // do the move
-    game_grid.Set(best_move.c, best_move.r, computer_choice);
-    last_move.Set(best_move.c, best_move.r);
+    game_grid.Set(best_move.move.c, best_move.move.r, Toggle(player_choice));
+    last_move.Set(best_move.move.c, best_move.move.r);
     turn = Toggle(turn);
     round++;
 }

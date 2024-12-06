@@ -48,6 +48,7 @@ namespace qlm
             void DrawGameOverMenu();
             void Reset(const Status s);
             int MiniMax(Grid board, const Cell player, const Location player_move, const int cur_round);
+            MMOut MiniMax2(Grid board, const Cell player, const Location player_move, const int cur_round);
             void BestMove();
     };
 }
