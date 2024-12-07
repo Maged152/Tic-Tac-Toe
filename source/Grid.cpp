@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <iostream>
 
 qlm::Grid::Grid()
 {
@@ -7,53 +8,53 @@ qlm::Grid::Grid()
 
 qlm::Grid::Grid(const qlm::Grid &other)
 {
-    for (int c = 0; c < cols; ++c)
+    for (int r = 0; r < rows; r++) 
     {
-        for (int r = 0; r < rows; ++r)
+        for (int c = 0; c < cols; c++)
         {
-            grid[c][r] = other.grid[c][r];
+            grid[r][c] = other.grid[r][c];
         }
     }
 }
 
-void qlm::Grid::Set(const int c, const int r, const qlm::Cell value)
+void qlm::Grid::Set(const int r, const int c, const qlm::Cell value)
 {
     // safer to check range of the input but no need for it here
-    grid[c][r] = value;
+    grid[r][c] = value;
 }
 
 void qlm::Grid::Set(const qlm::Cell value)
 {
-    for (int c = 0; c < cols; c++)
+    for (int r = 0; r < rows; r++) 
     {
-        for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
         {
-            grid[c][r] = value;
+            grid[r][c] = value;
         }
     }
 }
 
-qlm::Cell qlm::Grid::Get(const int c, const int r)
+qlm::Cell qlm::Grid::Get(const int r, const int c)
 {
     // safer to check range of the input but no need for it here
-    return grid[c][r];
+    return grid[r][c];
 }
 
-qlm::Cell qlm::Grid::IsGameOver(const Location &last_move)
+qlm::Cell qlm::Grid::IsGameOver(const Location last_move)
 {
     qlm::Cell winner = qlm::Cell::EMPTY;
-    int r = last_move.r;
-    int c = last_move.c;
+    const int r = last_move.r;
+    const int c = last_move.c;
     
     // Check the row of the last move
-    if (this->Get(c, 0) == this->Get(c, 1) && this->Get(c, 1) == this->Get(c, 2))
+    if (this->Get(r, 0) == this->Get(r, 1) && this->Get(r, 1) == this->Get(r, 2))
     {
-        winner = this->Get(c, 0);
+        winner = this->Get(r, 0);
     }
     // Check the column of the last move
-    else if (this->Get(0, r) == this->Get(1, r) && this->Get(1, r) == this->Get(2, r))
+    else if (this->Get(0, c) == this->Get(1, c) && this->Get(1, c) == this->Get(2, c))
     {
-        winner = this->Get(0, r);
+        winner = this->Get(0, c);
     }
     // Check the main diagonal if the last move is on it
     else if (c == r)
@@ -66,11 +67,32 @@ qlm::Cell qlm::Grid::IsGameOver(const Location &last_move)
     // Check the anti-diagonal if the last move is on it
     else if (r + c == 2)
     {
-        if (this->Get(2, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(0, 2))
+        if (this->Get(0, 2) == this->Get(1, 1) && this->Get(1, 1) == this->Get(2, 0))
         {
-            winner = this->Get(0, 0);
+            winner = this->Get(0, 2);
         }
     }
 
     return winner;
+}
+
+std::ostream& operator<<(std::ostream& os, const qlm::Cell c) 
+{
+    if (c == qlm::Cell::X) std::cout << "X";
+    else if (c == qlm::Cell::O) std::cout << "O";
+    else  std::cout << " ";
+
+    return os;
+}
+void qlm::Grid::Print()
+{
+    for (int r = 0; r < rows; r++)
+    {
+        std::cout << "| ";
+        for (int c = 0; c < cols; c++)
+        {
+            std::cout << this->Get(r, c) << " |";
+        }
+        std::cout << "\n";
+    }
 }

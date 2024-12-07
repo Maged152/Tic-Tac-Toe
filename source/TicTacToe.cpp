@@ -238,7 +238,7 @@ void qlm::TicTacToe::DrawGrid()
             const float x_pos = row * grid_loc.width + grid_loc.x + 40;
             const float y_pos = col * grid_loc.height + grid_loc.y + 20;
 
-            const Cell cell_value = game_grid.Get(col, row);
+            const Cell cell_value = game_grid.Get(row, col);
 
             if (cell_value == Cell::X)
             {
@@ -252,17 +252,17 @@ void qlm::TicTacToe::DrawGrid()
     }
 }
 
-void qlm::TicTacToe::UpdateGrid()
+void qlm::TicTacToe::MakeMove()
 {
     // Get mouse position
     const Vector2 mouse_Point = GetMousePosition();
     const Color hover_color = turn == Cell::X ? GREEN : RED;
 
-    for (int c = 0; c < game_grid.cols; c++)
+    for (int r = 0; r < game_grid.rows; r++)
     {
-        for (int r = 0; r < game_grid.rows; r++)
+        for (int c = 0; c < game_grid.cols; c++)
         {
-            const Cell cur_cell = game_grid.Get(c, r);
+            const Cell cur_cell = game_grid.Get(r, c);
 
             if (cur_cell == Cell::EMPTY)
             {
@@ -280,8 +280,8 @@ void qlm::TicTacToe::UpdateGrid()
 
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
-                        game_grid.Set(c, r, turn);
-                        last_move.Set(c, r);
+                        game_grid.Set(r, c, turn);
+                        last_move.Set(r, c);
                         turn = Toggle(turn);
                         round++;
                     }
@@ -381,7 +381,7 @@ void qlm::TicTacToe::Reset(const Status s)
     turn = Cell::X;
 }
 
-int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::Location player_move, int cur_round)
+qlm::MoveEvaluation qlm::TicTacToe::MiniMax(Grid board, const Cell player, const Location player_move, const int cur_round)
 {
     const auto GetScore = [cur_round](const qlm::Cell game_winner)
     {
@@ -390,59 +390,9 @@ int qlm::TicTacToe::MiniMax(qlm::Grid board, const qlm::Cell player, const qlm::
         return 0; // Draw or ongoing game
     };
 
-    const int score = GetScore(board.IsGameOver(player_move));
-
-    // check if the game is over
-    if (score != 0 || cur_round == 9)
-    {
-        return score;   
-    }
-
-    int best_score = player == qlm::Cell::X ? -1000 : 1000;
-
-    // Iterate over all possible moves
-    for (int r = 0; r < board.rows; r++) 
-    {
-        for (int c = 0; c < board.cols; c++) 
-        {
-            if (board.Get(c, r) == qlm::Cell::EMPTY)
-            {
-                // make a move
-                board.Set(c, r, player);
-
-                const int move_score = MiniMax(board, Toggle(player), {c, r}, cur_round + 1);
-
-                // undo the move
-                board.Set(c, r, qlm::Cell::EMPTY);
-
-                if (player == qlm::Cell::X)
-                {
-                    best_score = std::max(move_score, best_score);
-                }
-                else
-                {
-                    best_score = std::min(move_score, best_score);
-                }
-            }
-        }
-    }
-
-    return best_score;
-}
-
-qlm::MMOut qlm::TicTacToe::MiniMax2(Grid board, const Cell player, const Location player_move, const int cur_round)
-{
-    const auto GetScore = [cur_round](const qlm::Cell game_winner)
-    {
-        if (game_winner == qlm::Cell::X) return 10 - cur_round;  // Favor faster wins
-        if (game_winner == qlm::Cell::O) return cur_round - 10;  // Favor slower losses
-        return 0; // Draw or ongoing game
-    };
-
-    qlm::MMOut out;
+    qlm::MoveEvaluation out;
     out.score = GetScore(board.IsGameOver(player_move));
 
-    // check if the game is over
     if (out.score != 0 || cur_round == 9)
     {
         return out;   
@@ -456,23 +406,23 @@ qlm::MMOut qlm::TicTacToe::MiniMax2(Grid board, const Cell player, const Locatio
     {
         for (int c = 0; c < board.cols; c++) 
         {
-            if (board.Get(c, r) == qlm::Cell::EMPTY)
+            if (board.Get(r, c) == qlm::Cell::EMPTY)
             {
                 // make a move
-                board.Set(c, r, player);
+                board.Set(r, c, player);
 
-                auto res = MiniMax2(board, Toggle(player), {c, r}, cur_round + 1);
+                auto res = MiniMax(board, Toggle(player), {r, c}, cur_round + 1);
                 const int move_score = res.score;
 
                 // undo the move
-                //board.Set(c, r, qlm::Cell::EMPTY);
+                board.Set(r, c, qlm::Cell::EMPTY);
 
                 if (player == qlm::Cell::X)
                 {
                     // Maximize score for X
                     if (move_score > best_score) {
                         best_score = move_score;
-                        best_move.Set(c, r);
+                        best_move.Set(r, c);
                     }
                 } 
                 else 
@@ -481,7 +431,7 @@ qlm::MMOut qlm::TicTacToe::MiniMax2(Grid board, const Cell player, const Locatio
                     if (move_score < best_score) 
                     {
                         best_score = move_score;
-                        best_move.Set(c, r);
+                        best_move.Set(r, c);
                     }
                 }
             }
@@ -496,53 +446,12 @@ qlm::MMOut qlm::TicTacToe::MiniMax2(Grid board, const Cell player, const Locatio
 
 void qlm::TicTacToe::BestMove()
 {
-    // qlm::Location best_move {};
+    const auto best_move = MiniMax(game_grid, Toggle(player_choice), last_move, round);
 
-    // const qlm::Cell computer_choice = Toggle(player_choice);
-    // int best_score = computer_choice == qlm::Cell::X ? -1000 : 1000;
-
-    // // Iterate over all possible moves
-    // for (int r = 0; r < game_grid.rows; r++) 
-    // {
-    //     for (int c = 0; c < game_grid.cols; c++) 
-    //     {
-    //         if (game_grid.Get(c, r) == qlm::Cell::EMPTY)
-    //         {
-    //             // make a move
-    //             game_grid.Set(c, r, computer_choice);
-
-    //             const int move_score = MiniMax(game_grid, player_choice, {c, r}, round + 1);
-
-    //             // undo the move
-    //             game_grid.Set(c, r, qlm::Cell::EMPTY);
-
-    //             // Update the best score and move based on the player
-    //             if (computer_choice == qlm::Cell::X) 
-    //             { 
-    //                 // Maximize score for X
-    //                 if (move_score > best_score) {
-    //                     best_score = move_score;
-    //                     best_move.Set(c, r);
-    //                 }
-    //             } 
-    //             else 
-    //             { 
-    //                 // Minimize score for O
-    //                 if (move_score < best_score) 
-    //                 {
-    //                     best_score = move_score;
-    //                     best_move.Set(c, r);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    const auto best_move = MiniMax2(game_grid, Toggle(player_choice), last_move, round);
-
-    std::cout << "The AI decided to go c = " << best_move.move.c << " , r = " << best_move.move.r << " ,with score = " << best_move.score << "\n"; 
+    std::cout << "The AI decided to go {r = " << best_move.move.r << " , c = " << best_move.move.c << "} ,with score = " << best_move.score << "\n"; 
     // do the move
-    game_grid.Set(best_move.move.c, best_move.move.r, Toggle(player_choice));
-    last_move.Set(best_move.move.c, best_move.move.r);
+    game_grid.Set(best_move.move.r, best_move.move.c, Toggle(player_choice));
+    last_move.Set(best_move.move.r, best_move.move.c);
     turn = Toggle(turn);
     round++;
 }
@@ -578,11 +487,11 @@ void qlm::TicTacToe::Start(int fps, const char *name)
                 DrawGrid();
                 if (game_type == qlm::GameType::MULTI_PLAYER)
                 {
-                    UpdateGrid();
+                    MakeMove();
                 }
                 else
                 {
-                    if (turn == player_choice) UpdateGrid();
+                    if (turn == player_choice) MakeMove();
                     else BestMove();
                 }
                 

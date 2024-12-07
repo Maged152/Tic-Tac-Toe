@@ -27,17 +27,17 @@ namespace qlm
 
     struct Location
     {
-        int c;
         int r;
+        int c;
 
-        void Set(int c_loc, int r_loc)
+        void Set(int r_loc, int c_loc)
         {
             c = c_loc;
             r = r_loc;
         }
     };
 
-    struct MMOut
+    struct MoveEvaluation 
     {
         int score;
         Location move;
@@ -58,6 +58,7 @@ namespace qlm
             void Set(const int c, const int r, const qlm::Cell value);
             void Set(const qlm::Cell value);
             Cell Get(const int c, const int r);
-            Cell IsGameOver(const Location& last_move);
+            Cell IsGameOver(const Location last_move);
+            void Print();
     };
 }
