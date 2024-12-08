@@ -381,7 +381,7 @@ void qlm::TicTacToe::Reset(const Status s)
     turn = Cell::X;
 }
 
-qlm::MoveEvaluation qlm::TicTacToe::MiniMax(Grid board, const Cell player, const Location player_move, const int cur_round)
+qlm::MoveEvaluation qlm::TicTacToe::MiniMax(const Cell player, const Location player_move, const int cur_round)
 {
     const auto GetScore = [cur_round](const qlm::Cell game_winner)
     {
@@ -391,7 +391,7 @@ qlm::MoveEvaluation qlm::TicTacToe::MiniMax(Grid board, const Cell player, const
     };
 
     qlm::MoveEvaluation out;
-    out.score = GetScore(board.IsGameOver(player_move));
+    out.score = GetScore(game_grid.IsGameOver(player_move));
 
     if (out.score != 0 || cur_round == 9)
     {
@@ -402,20 +402,20 @@ qlm::MoveEvaluation qlm::TicTacToe::MiniMax(Grid board, const Cell player, const
     qlm::Location best_move {};
 
     // Iterate over all possible moves
-    for (int r = 0; r < board.rows; r++) 
+    for (int r = 0; r < game_grid.rows; r++) 
     {
-        for (int c = 0; c < board.cols; c++) 
+        for (int c = 0; c < game_grid.cols; c++) 
         {
-            if (board.Get(r, c) == qlm::Cell::EMPTY)
+            if (game_grid.Get(r, c) == qlm::Cell::EMPTY)
             {
                 // make a move
-                board.Set(r, c, player);
+                game_grid.Set(r, c, player);
 
-                auto res = MiniMax(board, Toggle(player), {r, c}, cur_round + 1);
+                auto res = MiniMax(Toggle(player), {r, c}, cur_round + 1);
                 const int move_score = res.score;
 
                 // undo the move
-                board.Set(r, c, qlm::Cell::EMPTY);
+                game_grid.Set(r, c, qlm::Cell::EMPTY);
 
                 if (player == qlm::Cell::X)
                 {
@@ -446,7 +446,7 @@ qlm::MoveEvaluation qlm::TicTacToe::MiniMax(Grid board, const Cell player, const
 
 void qlm::TicTacToe::BestMove()
 {
-    const auto best_move = MiniMax(game_grid, Toggle(player_choice), last_move, round);
+    const auto best_move = MiniMax(Toggle(player_choice), last_move, round);
 
     std::cout << "The AI decided to go {r = " << best_move.move.r << " , c = " << best_move.move.c << "} ,with score = " << best_move.score << "\n"; 
     // do the move

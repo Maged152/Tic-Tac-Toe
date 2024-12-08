@@ -47,7 +47,7 @@ namespace qlm
             void IsGameOver();
             void DrawGameOverMenu();
             void Reset(const Status s);
-            MoveEvaluation MiniMax(Grid board, const Cell player, const Location player_move, const int cur_round);
+            MoveEvaluation MiniMax(const Cell player, const Location player_move, const int cur_round);
             void BestMove();
     };
 }
