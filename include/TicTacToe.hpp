@@ -1,7 +1,7 @@
 #pragma once
 #include "types.hpp"
 #include <raylib.h>
-
+#include <limits>
 namespace qlm
 {
     class TicTacToe
@@ -47,7 +47,8 @@ namespace qlm
             void IsGameOver();
             void DrawGameOverMenu();
             void Reset(const Status s);
-            MoveEvaluation MiniMax(const Cell player, const Location player_move, const int cur_round);
+            MoveEvaluation MiniMax(const Cell player, const Location player_move, const int cur_round,
+                                   int best_for_x = std::numeric_limits<int>::min(),  int best_for_o = std::numeric_limits<int>::max());
             void BestMove();
     };
 }
