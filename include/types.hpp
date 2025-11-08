@@ -1,15 +1,16 @@
 #pragma once
-
+#include "Colors.hpp"
 namespace qlm
 {
     enum class Status
     {
         START_MENU,
-        GAME_TYPE,
-        GAME_CHOICE,
-        GAME_RUNNING,
+        PLAY_MODE,
+        PIECE_SELECTION,
+        GAME_BOARD,
         GAME_OVER,
-        GAME_CLOSED
+        GAME_CLOSED,
+        NO_CHANGE
     };
 
     enum class Cell

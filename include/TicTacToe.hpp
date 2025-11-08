@@ -1,7 +1,9 @@
 #pragma once
 #include "types.hpp"
 #include <raylib.h>
+#include "Layer.hpp"
 #include <limits>
+#include <vector>
 namespace qlm
 {
     class TicTacToe
@@ -18,10 +20,6 @@ namespace qlm
 
             const Rectangle grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size};
 
-            const Color back_ground {20, 189, 172, 255};
-            const Color text_color {84, 84, 84, 255};
-            const Color hover {60, 60, 60, 255};
-
             Font game_font;
             Font grid_font;
 
@@ -32,7 +30,10 @@ namespace qlm
             Cell winner = Cell::EMPTY;
             int round = 0;
             Location last_move;
-            Grid game_grid;  
+            Grid game_grid;
+
+            Layer* active_layer;
+            std::vector<Layer*> game_layers;
 
         public:
             ~TicTacToe();

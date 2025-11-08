@@ -64,7 +64,7 @@ void qlm::TicTacToe::DrawStartMenu()
         draw_start_button(hover);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           status = Status::GAME_TYPE;
+           status = Status::PLAY_MODE;
         }
     }
 
@@ -128,7 +128,7 @@ void qlm::TicTacToe::DrawGameType()
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_type = GameType::SINGLE_PLAYER;
-            status = Status::GAME_CHOICE;
+            status = Status::PIECE_SELECTION;
         }
     }
 
@@ -138,7 +138,7 @@ void qlm::TicTacToe::DrawGameType()
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_type = GameType::MULTI_PLAYER;
-            status = Status::GAME_RUNNING;
+            status = Status::GAME_BOARD;
         }
     }
 }
@@ -191,7 +191,7 @@ void qlm::TicTacToe::DrawGameChoice()
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             player_choice = Cell::X;
-            status = Status::GAME_RUNNING;
+            status = Status::GAME_BOARD;
         }
     }
 
@@ -201,7 +201,7 @@ void qlm::TicTacToe::DrawGameChoice()
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             player_choice = Cell::O;
-            status = Status::GAME_RUNNING;
+            status = Status::GAME_BOARD;
         }
     }
 }
@@ -357,7 +357,7 @@ void qlm::TicTacToe::DrawGameOverMenu()
         DrawButton("Replay", replay_button, hover, GREEN);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            Reset(Status::GAME_RUNNING);
+            Reset(Status::GAME_BOARD);
         }
     }
 
@@ -478,15 +478,15 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             {  
                 DrawStartMenu();
             }
-            else if (status == Status::GAME_TYPE)
+            else if (status == Status::PLAY_MODE)
             {
                 DrawGameType();
             }
-            else if (status == Status::GAME_CHOICE)
+            else if (status == Status::PIECE_SELECTION)
             {
                 DrawGameChoice();
             }
-            else if (status == Status::GAME_RUNNING)
+            else if (status == Status::GAME_BOARD)
             {
                 DrawGrid();
                 if (game_type == qlm::GameType::MULTI_PLAYER)
