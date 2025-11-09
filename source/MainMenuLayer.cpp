@@ -1,19 +1,19 @@
 #include "MainMenuLayer.hpp"
 
-qlm::MainMenuLayer::MainMenuLayer(const Font& font)
+qlm::MainMenuLayer::MainMenuLayer(const int width, const int height, const Font& font)
     : start_button {width / 2 - 170, 170, button_width, button_height},
       exit_button = {width / 2 - 170, 330, button_width, button_height},
       font(font),
-      draw_color(text_color)
+      draw_color(qlm::glb::text_color)
 {}
 
 qlm::MainMenuLayer::~MainMenuLayer()
 {}
 
-void qlm::MainMenuLayer::DrawButton(const Rectangle &button, const char *text, const Color text_color)
+void qlm::MainMenuLayer::DrawButton(const Rectangle &button, const char *text, const Color c)
 {
     DrawRectangleRounded(button, 0.6f, 20, draw_color);
-    DrawTextEx(font, text, {button.x + 20, button.y + 10}, 80, 10, text_color);
+    DrawTextEx(font, text, {button.x + 20, button.y + 10}, 80, 10, c);
 }
 
 void qlm::MainMenuLayer::OnRender()
@@ -40,7 +40,7 @@ qlm::Status qlm::MainMenuLayer::OnUpdate(float ts)
     }
     else
     {
-        draw_color = text_color;
+        draw_color = qlm::glb::text_color;
     }
 
     if (CheckCollisionPointRec(mousePoint, exit_button))
@@ -53,7 +53,7 @@ qlm::Status qlm::MainMenuLayer::OnUpdate(float ts)
     }
     else
     {
-        draw_color = text_color;
+        draw_color = qlm::glb::text_color;
     }
 
     return status;

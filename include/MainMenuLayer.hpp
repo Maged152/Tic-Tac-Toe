@@ -12,9 +12,10 @@ namespace qlm
 
 		Rectangle start_button, exit_button;
 		Color draw_color;
+		Font font;
 		
 	public:
-		MainMenuLayer(const Font& font);
+		MainMenuLayer(const int width, const int height, const Font& font);
 		virtual ~MainMenuLayer();
 		virtual void OnUpdate(float ts) override;
 		virtual Status OnRender() override;
