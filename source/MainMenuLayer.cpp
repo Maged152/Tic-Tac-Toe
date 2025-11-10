@@ -22,9 +22,9 @@ void qlm::MainMenuLayer::OnRender()
     qlm::DrawButton(exit_button, "EXIT", RED);
 }
 
-qlm::Status qlm::MainMenuLayer::OnUpdate(float ts)
+void qlm::MainMenuLayer::OnUpdate(GameState& game_status)
 {
-    qlm::Status status = qlm::Status::NO_CHANGE;
+    game_status.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -35,7 +35,7 @@ qlm::Status qlm::MainMenuLayer::OnUpdate(float ts)
         draw_color = hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           status = Status::PLAY_MODE;
+           game_status.status = Status::PLAY_MODE;
         }
     }
     else
@@ -48,13 +48,11 @@ qlm::Status qlm::MainMenuLayer::OnUpdate(float ts)
         draw_color = hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            status = Status::GAME_CLOSED;
+            game_status.status = Status::GAME_CLOSED;
         }
     }
     else
     {
         draw_color = qlm::glb::text_color;
     }
-
-    return status;
 }

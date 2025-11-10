@@ -10,8 +10,8 @@ namespace qlm
 		Font font;
 	public:
 		virtual ~Layer() = default;
-		virtual void OnUpdate(float ts) {}
-		virtual Status OnRender() {}
+		virtual void OnUpdate(GameState& game_status) {}
+		virtual void OnRender() {}
 	};
 
 }

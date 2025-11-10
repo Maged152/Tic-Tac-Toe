@@ -22,9 +22,9 @@ void qlm::PlayModeLayer::OnRender()
     qlm::DrawButton(multi_button, "Multi Player");
 }
 
-qlm::Status qlm::PlayModeLayer::OnUpdate(float ts)
+void qlm::PlayModeLayer::OnUpdate(GameState& game_status)
 {
-    qlm::Status status = qlm::Status::NO_CHANGE;
+    game_status.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -35,7 +35,8 @@ qlm::Status qlm::PlayModeLayer::OnUpdate(float ts)
         draw_color = hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           status = Status::PIECE_SELECTION;
+            game_status.status = Status::PIECE_SELECTION;
+            game_status.gameType = GameType::SINGLE_PLAYER;
         }
     }
     else
@@ -48,13 +49,12 @@ qlm::Status qlm::PlayModeLayer::OnUpdate(float ts)
         draw_color = hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            status = Status::GAME_BOARD;
+            game_status.status = Status::GAME_BOARD;
+            game_status.gameType = GameType::MULTI_PLAYER;
         }
     }
     else
     {
         draw_color = qlm::glb::text_color;
     }
-
-    return status;
 }

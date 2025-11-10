@@ -62,4 +62,24 @@ namespace qlm
             Cell IsGameOver(const Location last_move);
             void Print();
     };
+
+    struct GameState
+    {
+        Status status = Status::START_MENU;
+        GameType gameType = GameType::SINGLE_PLAYER;
+        Cell playerPiece = Cell::EMPTY;
+        Cell winner = Cell::EMPTY;
+        Location lastMove;
+        bool isPlayerTurn = true;
+
+        void Reset()
+        {
+            status = Status::START_MENU;
+            gameType = GameType::SINGLE_PLAYER;
+            playerPiece = Cell::EMPTY;
+            winner = Cell::EMPTY;
+            lastMove = Location{ -1, -1 };
+            isPlayerTurn = true;
+        }
+    };
 }
