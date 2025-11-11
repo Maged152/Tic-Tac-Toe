@@ -11,8 +11,7 @@ namespace qlm
 		static const int button_height = 80;
 
 		Rectangle replay_button, main_button;
-		Color draw_color;
-		Font font;
+		Color replay_color, main_color;
 		std::string result_text = "";
 		Cell winner = Cell::EMPTY;
 		
@@ -23,7 +22,7 @@ namespace qlm
 		virtual void OnRender() override;
 
 	private:
-		void DrawButton(const Rectangle& button, const char* text, const Color text_color);
+		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);
 	};
 
 }

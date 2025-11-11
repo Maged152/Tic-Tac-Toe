@@ -11,8 +11,7 @@ namespace qlm
 		static const int button_height = 90;
 
 		Rectangle x_button, o_button;
-		Color draw_color;
-		Font font;
+		Color x_color, o_color;
 		
 	public:
 		PieceSelectionLayer(const int width, const int height, const Font& font);
@@ -21,7 +20,7 @@ namespace qlm
 		virtual void OnRender() override;
 
 	private:
-		void DrawButton(const Rectangle& button, const char* text, const Color text_color);
+		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);
 	};
 
 }

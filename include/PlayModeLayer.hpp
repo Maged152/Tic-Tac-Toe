@@ -11,8 +11,7 @@ namespace qlm
 		static const int button_height = 110;
 
 		Rectangle single_button, multi_button;
-		Color draw_color;
-		Font font;
+		Color single_color, multi_color;
 		
 	public:
 		PlayModeLayer(const int width, const int height, const Font& font);
@@ -21,7 +20,7 @@ namespace qlm
 		virtual void OnRender() override;
 
 	private:
-		void DrawButton(const Rectangle& button, const char* text);
+		void DrawButton(const Rectangle& button, const Color button_color, const char* text);
 	};
 
 }

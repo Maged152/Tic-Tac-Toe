@@ -4,22 +4,23 @@ qlm::PieceSelectionLayer::PieceSelectionLayer(const int width, const int height,
     : x_button {width / 2 - button_width - 20, 250, button_width, button_height},
       o_button = {width / 2 + 2, 250, button_width, button_height},
       font(font),
-      draw_color(qlm::glb::text_color)
+      x_color(qlm::glb::text_color),
+      o_color(qlm::glb::text_color)
 {}
 
 qlm::PieceSelectionLayer::~PieceSelectionLayer()
 {}
 
-void qlm::PieceSelectionLayer::DrawButton(const Rectangle &button, const char *text, const Color c)
+void qlm::PieceSelectionLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const Color text_color)
 {
-    DrawRectangleRounded(button, 0.6f, 20, draw_color);
-    DrawTextEx(font, text, {button.x + 130, button.y + 15}, 80, 10, c);
+    DrawRectangleRounded(button, 0.6f, 20, button_color);
+    DrawTextEx(font, text, {button.x + 130, button.y + 15}, 80, 10, text_color);
 }
 
 void qlm::PieceSelectionLayer::OnRender()
 {
-    qlm::DrawButton(x_button, "X", GREEN);
-    qlm::DrawButton(o_button, "O", RED);
+    qlm::DrawButton(x_button, x_color, "X", GREEN);
+    qlm::DrawButton(o_button, o_color, "O", RED);
 }
 
 void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
@@ -32,7 +33,7 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
     // Change button color on hover
     if (CheckCollisionPointRec(mousePoint, x_button))
     {
-        draw_color = hover;
+        x_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
            game_status.status = Status::GAME_BOARD;
@@ -41,12 +42,12 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
     }
     else
     {
-        draw_color = qlm::glb::text_color;
+        x_color = qlm::glb::text_color;
     }
 
     if (CheckCollisionPointRec(mousePoint, o_button))
     {
-        draw_color = hover;
+        o_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_status.status = Status::GAME_BOARD;
@@ -55,6 +56,6 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
     }
     else
     {
-        draw_color = qlm::glb::text_color;
+        o_color = qlm::glb::text_color;
     }
 }
