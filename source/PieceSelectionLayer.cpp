@@ -37,7 +37,7 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
            game_status.status = Status::GAME_BOARD;
-           game_status.playerPiece = Cell::X;
+           game_status.player_piece = Cell::X;
         }
     }
     else
@@ -51,7 +51,7 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_status.status = Status::GAME_BOARD;
-            game_status.playerPiece = Cell::O;
+            game_status.player_piece = Cell::O;
         }
     }
     else

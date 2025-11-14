@@ -37,7 +37,7 @@ void qlm::PlayModeLayer::OnUpdate(GameState& game_status)
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_status.status = Status::PIECE_SELECTION;
-            game_status.gameType = GameType::SINGLE_PLAYER;
+            game_status.game_type = GameType::SINGLE_PLAYER;
         }
     }
     else
@@ -51,7 +51,7 @@ void qlm::PlayModeLayer::OnUpdate(GameState& game_status)
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             game_status.status = Status::GAME_BOARD;
-            game_status.gameType = GameType::MULTI_PLAYER;
+            game_status.game_type = GameType::MULTI_PLAYER;
         }
     }
     else

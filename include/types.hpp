@@ -66,20 +66,16 @@ namespace qlm
     struct GameState
     {
         Status status = Status::START_MENU;
-        GameType gameType = GameType::SINGLE_PLAYER;
-        Cell playerPiece = Cell::EMPTY;
+        GameType game_type = GameType::SINGLE_PLAYER;
+        Cell player_piece = Cell::EMPTY;
         Cell winner = Cell::EMPTY;
-        Location lastMove;
-        bool isPlayerTurn = true;
 
         void Reset()
         {
             status = Status::START_MENU;
-            gameType = GameType::SINGLE_PLAYER;
-            playerPiece = Cell::EMPTY;
+            game_type = GameType::SINGLE_PLAYER;
+            player_piece = Cell::EMPTY;
             winner = Cell::EMPTY;
-            lastMove = Location{ -1, -1 };
-            isPlayerTurn = true;
         }
     };
 }
