@@ -1,8 +1,8 @@
-#include "PlayModeLayer.hpp"
+#include "layers/PlayModeLayer.hpp"
 
 qlm::PlayModeLayer::PlayModeLayer(const int width, const int height, const Font& font)
-    : single_button {width / 2 - button_width / 2, 170, button_width, button_height},
-      multi_button = {width / 2 - button_width / 2, 330, button_width, button_height},
+    : single_button {width / 2.0f - button_width / 2, 170, button_width, button_height},
+      multi_button {width / 2.0f - button_width / 2, 330, button_width, button_height},
       font(font),
       single_color(qlm::glb::text_color),
       multi_color(qlm::glb::text_color)
@@ -19,8 +19,8 @@ void qlm::PlayModeLayer::DrawButton(const Rectangle &button,const Color button_c
 
 void qlm::PlayModeLayer::OnRender()
 {
-    qlm::DrawButton(single_button, single_color, "Single Player");
-    qlm::DrawButton(multi_button, multi_color, "Multi Player");
+    DrawButton(single_button, single_color, "Single Player");
+    DrawButton(multi_button, multi_color, "Multi Player");
 }
 
 void qlm::PlayModeLayer::OnUpdate(GameState& game_status)

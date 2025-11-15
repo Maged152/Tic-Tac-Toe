@@ -12,6 +12,8 @@ namespace qlm
 
 		Rectangle x_button, o_button;
 		Color x_color, o_color;
+
+		Font font;
 		
 	public:
 		PieceSelectionLayer(const int width, const int height, const Font& font);

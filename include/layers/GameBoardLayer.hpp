@@ -6,13 +6,15 @@ namespace qlm
 {
    class GameBoardLayer : public Layer
 	{
+	public:
+		Grid game_grid;
+		Rectangle grid_loc;
+		
 	private:
 		static const int cells = 9;
         static const int cell_size = 150;
 
-		Grid game_grid;
 		Font grid_font;
-		Rectangle grid_loc;
 
 		Location last_move;
 

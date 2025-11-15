@@ -1,8 +1,8 @@
-#include "MainMenuLayer.hpp"
+#include "layers/MainMenuLayer.hpp"
 
 qlm::MainMenuLayer::MainMenuLayer(const int width, const int height, const Font& font)
-    : start_button {width / 2 - 170, 170, button_width, button_height},
-      exit_button = {width / 2 - 170, 330, button_width, button_height},
+    : start_button {width / 2.0f - 170, 170, button_width, button_height},
+      exit_button {width / 2.0f - 170, 330, button_width, button_height},
       font(font),
       start_color(qlm::glb::text_color),
       exit_color(qlm::glb::text_color)
@@ -19,8 +19,8 @@ void qlm::MainMenuLayer::DrawButton(const Rectangle &button,const Color button_c
 
 void qlm::MainMenuLayer::OnRender()
 {
-    qlm::DrawButton(start_button, start_color, "START", GREEN);
-    qlm::DrawButton(exit_button, exit_color, "EXIT", RED);
+    DrawButton(start_button, start_color, "START", GREEN);
+    DrawButton(exit_button, exit_color, "EXIT", RED);
 }
 
 void qlm::MainMenuLayer::OnUpdate(GameState& game_status)

@@ -1,18 +1,19 @@
 #include "TicTacToe.hpp"
 #include "layers/GameBoardLayer.hpp"
-#include "layers/StartMenuLayer.hpp"
-#include "layers/GameTypeLayer.hpp"
+#include "layers/MainMenuLayer.hpp"
+#include "layers/PlayModeLayer.hpp"
 #include "layers/PieceSelectionLayer.hpp"
 #include "layers/GameOverLayer.hpp"
 #include <string>
 #include <cmath>
+#include <cassert>
 
 qlm::TicTacToe::TicTacToe()
 {
     InitTextures();
 
     // Start with Main Menu
-    game_state.status = Status::START_MENU;
+    game_status.status = Status::START_MENU;
     active_layer = std::make_unique<MainMenuLayer>(width, height, game_font);
 }
 
@@ -31,7 +32,7 @@ void qlm::TicTacToe::InitTextures()
 
 void qlm::TicTacToe::Transition(const Status new_status)
 {
-     switch (nextStatus) {
+    switch (new_status) {
         case Status::START_MENU:
             active_layer = std::make_unique<MainMenuLayer>(width, height, game_font);
             break;
@@ -45,8 +46,16 @@ void qlm::TicTacToe::Transition(const Status new_status)
             active_layer = std::make_unique<GameBoardLayer>(width, height, grid_font);
             break;
         case Status::GAME_OVER:
-            active_layer = std::make_unique<GameOverLayer>(width, height, game_font);
+        {
+            auto *gb = dynamic_cast<GameBoardLayer*>(active_layer.get());
+            assert(gb && "TicTacToe::Transition - expected GameBoardLayer for GAME_OVER");
+
+            auto saved_grid = gb->game_grid;
+            auto saved_loc = gb->grid_loc;
+
+            active_layer = std::make_unique<GameOverLayer>(width, height, grid_font, game_font, saved_grid, saved_loc);
             break;
+        }
         case Status::GAME_CLOSED:
             CloseWindow();
             break;
@@ -67,12 +76,12 @@ void qlm::TicTacToe::Start(int fps, const char *name)
     while(!WindowShouldClose())
     {
         BeginDrawing();
-            ClearBackground(back_ground);
+            ClearBackground(qlm::glb::back_ground);
             DrawTextEx(game_font, "XO GAME", {width / 2 - 200, 20}, 80, 10, qlm::glb::text_color);
 
             active_layer->OnUpdate(game_status);
             active_layer->OnRender();
-            active_layer->Transition(game_status.status);
+            Transition(game_status.status);
  
         EndDrawing();
     }

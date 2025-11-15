@@ -1,8 +1,7 @@
-#pragma once
-
 #include "layers/GameBoardLayer.hpp"
+#include <algorithm>
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size}, grid_font(font)
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}, grid_font(font)
 {}
 
 qlm::GameBoardLayer::~GameBoardLayer()
@@ -86,7 +85,7 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
                 };
 
                 // Check if the mouse is over this cell
-                if (CheckCollisionPointRec(mouse_Point, cell))
+                if (CheckCollisionPointRec(mouse_Point, hover_cell))
                 {
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
@@ -187,7 +186,7 @@ void qlm::GameBoardLayer::OnRender()
 {
     DrawGrid();
 
-    if (hover_color != WHITE)
+    if (hover_color.r != 255 || hover_color.g != 255 || hover_color.b != 255)
     {
         DrawRectangleRec(hover_cell, Fade(hover_color, 0.5f));
     }

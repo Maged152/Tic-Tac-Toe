@@ -12,6 +12,7 @@ namespace qlm
 
 		Rectangle start_button, exit_button;
 		Color start_color, exit_color;
+		Font font;
 		
 	public:
 		MainMenuLayer(const int width, const int height, const Font& font);

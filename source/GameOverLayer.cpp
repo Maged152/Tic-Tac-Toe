@@ -1,12 +1,16 @@
-#include "GameOverLayer.hpp"
+#include "layers/GameOverLayer.hpp"
 
-qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font& grid_font, const Font& text_font)
-    : replay_button {width / 2 - button_width - 20, height / 2 + 20, button_width, button_height},
-      main_button = {width / 2 + 20, height / 2 + 20, button_width, button_height},
-      grid_font(grid_font),
-      text_font(text_font),
-      replay_color(qlm::glb::text_color),
-      main_color(qlm::glb::text_color)
+qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font& grid_font, const Font& text_font, const qlm::Grid& grid, const Rectangle& grid_loc)
+        : replay_button {width / 2.0f - button_width - 20, height / 2.0f + 20, button_width, button_height},
+          main_button {width / 2.0f + 20, height / 2.0f + 20, button_width, button_height},
+          grid_font(grid_font),
+          text_font(text_font),
+          replay_color(qlm::glb::text_color),
+          main_color(qlm::glb::text_color),
+          game_grid(grid),
+          grid_loc(grid_loc),
+          width(width),
+          height(height)
 {}
 
 qlm::GameOverLayer::~GameOverLayer()
@@ -15,8 +19,8 @@ qlm::GameOverLayer::~GameOverLayer()
 void qlm::GameOverLayer::DrawButton(const Rectangle &button, const Color button_color, const char *text, const Color text_color)
 {
     DrawRectangleRounded(button, 0.4f, 10,  Fade(button_color, 0.7f));
-    Vector2 text_size = MeasureTextEx(font, text, 30, 5);
-    DrawTextEx(game_font, text, 
+    Vector2 text_size = MeasureTextEx(text_font, text, 30, 5);
+    DrawTextEx(text_font, text, 
                 {button.x + button.width / 2 - text_size.x / 2, button.y + button.height / 2 - text_size.y / 2}, 
                 30, 5, text_color);
 }
@@ -66,16 +70,9 @@ void qlm::GameOverLayer::OnRender()
 {
     DrawGrid();
 
-    if (winner == Cell::X)
-        result_text = "Player X Wins!";
-    else if (winner == Cell::O)
-        result_text = "Player O Wins!";
-    else
-        result_text = "It's a Draw!";
-
     // Draw the result text
-    DrawTextEx(font, result_text.c_str(), 
-               {width / 2 - MeasureTextEx(font, result_text.c_str(), 50, 5).x / 2, height / 2 - 100}, 
+    DrawTextEx(text_font, result_text.c_str(), 
+               {width / 2.0f - MeasureTextEx(text_font, result_text.c_str(), 50, 5).x / 2, height / 2.0f - 100}, 
                50, 5, qlm::glb::hover);
         
     DrawButton(replay_button, replay_color, "Replay", GREEN);
@@ -85,6 +82,13 @@ void qlm::GameOverLayer::OnRender()
 void qlm::GameOverLayer::OnUpdate(GameState& game_status)
 {
     game_status.status = qlm::Status::NO_CHANGE;
+
+    if (game_status.winner == Cell::X)
+        result_text = "Player X Wins!";
+    else if (game_status.winner == Cell::O)
+        result_text = "Player O Wins!";
+    else
+        result_text = "It's a Draw!";
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();

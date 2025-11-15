@@ -12,6 +12,8 @@ namespace qlm
 
 		Rectangle single_button, multi_button;
 		Color single_color, multi_color;
+
+		Font font;
 		
 	public:
 		PlayModeLayer(const int width, const int height, const Font& font);

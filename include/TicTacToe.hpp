@@ -1,5 +1,5 @@
 #pragma once
-#include "Layer.hpp"
+#include "layers/Layer.hpp"
 #include <limits>
 #include <memory>
 
@@ -8,8 +8,8 @@ namespace qlm
     class TicTacToe
     {
         private:
-            static const int width = 1000;
-            static const int height = 600;
+            static constexpr int width = 1000;
+            static constexpr int height = 600;
 
             Font game_font;
             Font grid_font;

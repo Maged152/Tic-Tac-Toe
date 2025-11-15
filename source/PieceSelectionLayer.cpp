@@ -1,8 +1,8 @@
-#include "PieceSelectionLayer.hpp"
+#include "layers/PieceSelectionLayer.hpp"
 
 qlm::PieceSelectionLayer::PieceSelectionLayer(const int width, const int height, const Font& font)
-    : x_button {width / 2 - button_width - 20, 250, button_width, button_height},
-      o_button = {width / 2 + 2, 250, button_width, button_height},
+    : x_button {width / 2.0f - button_width - 20, 250, button_width, button_height},
+      o_button {width / 2.0f + 2, 250, button_width, button_height},
       font(font),
       x_color(qlm::glb::text_color),
       o_color(qlm::glb::text_color)
@@ -19,8 +19,8 @@ void qlm::PieceSelectionLayer::DrawButton(const Rectangle &button,const Color bu
 
 void qlm::PieceSelectionLayer::OnRender()
 {
-    qlm::DrawButton(x_button, x_color, "X", GREEN);
-    qlm::DrawButton(o_button, o_color, "O", RED);
+    DrawButton(x_button, x_color, "X", GREEN);
+    DrawButton(o_button, o_color, "O", RED);
 }
 
 void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
