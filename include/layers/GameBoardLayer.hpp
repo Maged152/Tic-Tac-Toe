@@ -11,6 +11,7 @@ namespace qlm
         static const int cell_size = 150;
 
 		Grid game_grid;
+		Font grid_font;
 		Rectangle grid_loc;
 
 		Location last_move;
@@ -22,7 +23,7 @@ namespace qlm
 		Cell turn = Cell::X;
 		
 	public:
-		GameBoardLayer(const int width, const int height);
+		GameBoardLayer(const int width, const int height, const Font &font);
 		virtual ~GameBoardLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender() override;

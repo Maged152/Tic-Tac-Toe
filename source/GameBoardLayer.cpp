@@ -2,7 +2,7 @@
 
 #include "layers/GameBoardLayer.hpp"
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height) : grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size}
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : grid_loc {width / 2 - 253, height / 2 - 180, cell_size, cell_size}, grid_font(font)
 {}
 
 qlm::GameBoardLayer::~GameBoardLayer()
@@ -49,11 +49,11 @@ void qlm::GameBoardLayer::DrawGrid()
 
             if (cell_value == Cell::X)
             {
-                DrawTextEx(qlm::glb::grid_font, "X", {x_pos, y_pos}, 120, 10, GREEN);
+                DrawTextEx(grid_font, "X", {x_pos, y_pos}, 120, 10, GREEN);
             }
             else if (cell_value == Cell::O)
             {
-                DrawTextEx(qlm::glb::grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
+                DrawTextEx(grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
             }
         }
     }

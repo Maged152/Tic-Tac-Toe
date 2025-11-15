@@ -13,16 +13,18 @@ namespace qlm
 		Rectangle replay_button, main_button;
 		Color replay_color, main_color;
 		std::string result_text = "";
-		Cell winner = Cell::EMPTY;
+		Grid game_grid;
+		Font grid_font, text_font;
 		
 	public:
-		GameOverLayer(const int width, const int height, const Font& font);
+		GameOverLayer(const int width, const int height, const Font& grid_font, const Font& text_font);
 		virtual ~GameOverLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender() override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);
+		void DrawGrid();
 	};
 
 }
