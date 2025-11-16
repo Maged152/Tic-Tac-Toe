@@ -21,7 +21,7 @@ namespace qlm
 		virtual void OnRender() override;
 
 	private:
-		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);
+		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color, const int displacement);
 	};
 
 }

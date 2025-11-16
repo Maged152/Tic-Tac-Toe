@@ -11,16 +11,16 @@ qlm::PlayModeLayer::PlayModeLayer(const int width, const int height, const Font&
 qlm::PlayModeLayer::~PlayModeLayer()
 {}
 
-void qlm::PlayModeLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text)
+void qlm::PlayModeLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const int displacement)
 {
     DrawRectangleRounded(button, 0.6f, 20, button_color);
-    DrawTextEx(font, text, {button.x + 20, button.y + 10}, 80, 10, YELLOW);
+    DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, YELLOW);
 }
 
 void qlm::PlayModeLayer::OnRender()
 {
-    DrawButton(single_button, single_color, "Single Player");
-    DrawButton(multi_button, multi_color, "Multi Player");
+    DrawButton(single_button, single_color, "Single Player", 20);
+    DrawButton(multi_button, multi_color, "Multi Player", 50);
 }
 
 void qlm::PlayModeLayer::OnUpdate(GameState& game_status)

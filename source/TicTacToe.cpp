@@ -9,13 +9,7 @@
 #include <cassert>
 
 qlm::TicTacToe::TicTacToe()
-{
-    InitTextures();
-
-    // Start with Main Menu
-    game_status.status = Status::START_MENU;
-    active_layer = std::make_unique<MainMenuLayer>(width, height, game_font);
-}
+{}
 
 qlm::TicTacToe::~TicTacToe()
 {
@@ -71,6 +65,12 @@ void qlm::TicTacToe::Start(int fps, const char *name)
 {
     InitWindow(width, height, name);
     SetTargetFPS(fps);
+
+    InitTextures();
+
+    // Start with Main Menu
+    active_layer = std::make_unique<MainMenuLayer>(width, height, game_font);
+    game_status.status = Status::NO_CHANGE;
 
     // game loop
     while(!WindowShouldClose())

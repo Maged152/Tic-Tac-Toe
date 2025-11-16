@@ -11,16 +11,16 @@ qlm::MainMenuLayer::MainMenuLayer(const int width, const int height, const Font&
 qlm::MainMenuLayer::~MainMenuLayer()
 {}
 
-void qlm::MainMenuLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const Color text_color)
+void qlm::MainMenuLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const Color text_color, const int displacement)
 {
     DrawRectangleRounded(button, 0.6f, 20, button_color);
-    DrawTextEx(font, text, {button.x + 20, button.y + 10}, 80, 10, text_color);
+    DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, text_color);
 }
 
 void qlm::MainMenuLayer::OnRender()
 {
-    DrawButton(start_button, start_color, "START", GREEN);
-    DrawButton(exit_button, exit_color, "EXIT", RED);
+    DrawButton(start_button, start_color, "START", GREEN, 20);
+    DrawButton(exit_button, exit_color, "EXIT", RED, 70);
 }
 
 void qlm::MainMenuLayer::OnUpdate(GameState& game_status)

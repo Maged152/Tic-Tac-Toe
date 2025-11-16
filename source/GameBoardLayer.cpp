@@ -1,7 +1,9 @@
 #include "layers/GameBoardLayer.hpp"
 #include <algorithm>
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}, grid_font(font)
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : 
+                                grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}, 
+                                grid_font(font)
 {}
 
 qlm::GameBoardLayer::~GameBoardLayer()
@@ -65,9 +67,9 @@ qlm::Cell qlm::GameBoardLayer::Toggle(const qlm::Cell current)
 
 void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
 {
+    hover_color = WHITE;
     // Get mouse position
     const Vector2 mouse_Point = GetMousePosition();
-    hover_color = turn == Cell::X ? GREEN : RED;
 
     for (int r = 0; r < game_grid.rows; r++)
     {
@@ -77,16 +79,18 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
 
             if (cur_cell == Cell::EMPTY)
             {
-                hover_cell = {
-                    r * grid_loc.width + grid_loc.x, 
-                    c * grid_loc.height + grid_loc.y,
-                    (float)grid_loc.width,
-                    (float)grid_loc.height
-                };
-
+                Rectangle cell = {
+                        r * grid_loc.width + grid_loc.x, 
+                        c * grid_loc.height + grid_loc.y,
+                        (float)grid_loc.width,
+                        (float)grid_loc.height
+                    };
                 // Check if the mouse is over this cell
-                if (CheckCollisionPointRec(mouse_Point, hover_cell))
+                if (CheckCollisionPointRec(mouse_Point, cell))
                 {
+                    hover_color = turn == Cell::X ? GREEN : RED;
+                    hover_cell = cell;
+
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
                         game_grid.Set(r, c, turn);
@@ -94,10 +98,6 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
                         turn = Toggle(turn);
                         round++;
                     }
-                }
-                else
-                {
-                    hover_color = WHITE;
                 }
             }
         }
@@ -194,6 +194,7 @@ void qlm::GameBoardLayer::OnRender()
 
 void qlm::GameBoardLayer::OnUpdate(qlm::GameState &game_status)
 {
+    game_status.status = Status::NO_CHANGE;
     if (game_status.game_type == qlm::GameType::MULTI_PLAYER)
     {
         MakeMove(game_status);

@@ -99,7 +99,7 @@ void qlm::GameOverLayer::OnUpdate(GameState& game_status)
         replay_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           game_status.status = Status::PLAY_MODE;
+           game_status.status = Status::GAME_BOARD;
         }
     }
     else
@@ -112,7 +112,7 @@ void qlm::GameOverLayer::OnUpdate(GameState& game_status)
         main_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_status.status = Status::GAME_CLOSED;
+            game_status.status = Status::START_MENU;
         }
     }
     else
