@@ -10,6 +10,7 @@ namespace qlm
         GAME_BOARD,
         GAME_OVER,
         GAME_CLOSED,
+        GAME_EXTEND,
         NO_CHANGE
     };
 

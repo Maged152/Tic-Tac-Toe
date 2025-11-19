@@ -4,6 +4,7 @@
 #include "layers/PlayModeLayer.hpp"
 #include "layers/PieceSelectionLayer.hpp"
 #include "layers/GameOverLayer.hpp"
+#include "layers/GameExtendLayer.hpp"
 #include <string>
 #include <cmath>
 #include <cassert>
@@ -48,6 +49,17 @@ void qlm::TicTacToe::Transition(const Status new_status)
             auto saved_loc = gb->grid_loc;
 
             active_layer = std::make_unique<GameOverLayer>(width, height, grid_font, game_font, saved_grid, saved_loc);
+            break;
+        }
+        case Status::GAME_EXTEND:
+        {
+            auto *gb = dynamic_cast<GameBoardLayer*>(active_layer.get());
+            assert(gb && "TicTacToe::Transition - expected GameBoardLayer for GAME_EXTEND");
+
+            auto saved_grid = gb->game_grid;
+            auto saved_loc = gb->grid_loc;
+
+            active_layer = std::make_unique<GameExtendLayer>(width, height, grid_font, game_font, saved_grid, saved_loc);
             break;
         }
         case Status::GAME_CLOSED:
