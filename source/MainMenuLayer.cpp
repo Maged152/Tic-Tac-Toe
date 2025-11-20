@@ -17,7 +17,7 @@ void qlm::MainMenuLayer::DrawButton(const Rectangle &button,const Color button_c
     DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, text_color);
 }
 
-void qlm::MainMenuLayer::OnRender()
+void qlm::MainMenuLayer::OnRender(const float ts)
 {
     DrawButton(start_button, start_color, "START", GREEN, 20);
     DrawButton(exit_button, exit_color, "EXIT", RED, 70);

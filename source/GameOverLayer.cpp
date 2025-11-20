@@ -66,7 +66,7 @@ void qlm::GameOverLayer::DrawGrid()
     }
 }
 
-void qlm::GameOverLayer::OnRender()
+void qlm::GameOverLayer::OnRender(const float ts)
 {
     DrawGrid();
 

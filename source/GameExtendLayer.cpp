@@ -58,7 +58,7 @@ void qlm::GameExtendLayer::DrawGrid()
     DrawCircle(max_x, max_y, 5.0f, BLUE);
 }
 
-void qlm::GameExtendLayer::OnRender()
+void qlm::GameExtendLayer::OnRender(const float ts)
 {
     DrawGrid();
 }

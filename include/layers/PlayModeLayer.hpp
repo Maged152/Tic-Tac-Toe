@@ -19,7 +19,7 @@ namespace qlm
 		PlayModeLayer(const int width, const int height, const Font& font);
 		virtual ~PlayModeLayer();
 		virtual void OnUpdate(GameState& game_status) override;
-		virtual void OnRender() override;
+		virtual void OnRender(const float ts) override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const int displacement);

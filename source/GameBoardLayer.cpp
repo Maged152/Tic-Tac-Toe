@@ -182,7 +182,7 @@ void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
     round++;
 }
 
-void qlm::GameBoardLayer::OnRender()
+void qlm::GameBoardLayer::OnRender(const float ts)
 {
     DrawGrid();
 

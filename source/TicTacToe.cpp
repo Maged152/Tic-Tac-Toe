@@ -8,6 +8,7 @@
 #include <string>
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
 qlm::TicTacToe::TicTacToe()
 {}
@@ -84,6 +85,8 @@ void qlm::TicTacToe::Start(int fps, const char *name)
     active_layer = std::make_unique<MainMenuLayer>(width, height, game_font);
     game_status.status = Status::NO_CHANGE;
 
+    float last_time = GetTime();
+
     // game loop
     while(!WindowShouldClose())
     {
@@ -91,8 +94,12 @@ void qlm::TicTacToe::Start(int fps, const char *name)
             ClearBackground(qlm::glb::back_ground);
             DrawTextEx(game_font, "XO GAME", {width / 2 - 200, 20}, 80, 10, qlm::glb::text_color);
 
+            float current_time = GetTime();
+			float time_step = std::clamp(current_time - last_time, 0.001f, 0.1f);
+			last_time = current_time;
+
             active_layer->OnUpdate(game_status);
-            active_layer->OnRender();
+            active_layer->OnRender(time_step);
             Transition(game_status.status);
  
         EndDrawing();

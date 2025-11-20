@@ -19,7 +19,7 @@ namespace qlm
 		GameExtendLayer(const int width, const int height, const Font& grid_font, const Font& text_font, const Grid& grid, const Rectangle& grid_loc);
 		virtual ~GameExtendLayer();
 		virtual void OnUpdate(GameState& game_status) override;
-		virtual void OnRender() override;
+		virtual void OnRender(const float ts) override;
 
 	private:
 		void DrawGrid();

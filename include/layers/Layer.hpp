@@ -11,7 +11,7 @@ namespace qlm
 	public:
 		virtual ~Layer() = default;
 		virtual void OnUpdate(GameState& game_status) {}
-		virtual void OnRender() {}
+		virtual void OnRender(const float ts) {}
 	};
 
 }

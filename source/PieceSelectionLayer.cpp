@@ -17,7 +17,7 @@ void qlm::PieceSelectionLayer::DrawButton(const Rectangle &button,const Color bu
     DrawTextEx(font, text, {button.x + 130, button.y + 15}, 80, 10, text_color);
 }
 
-void qlm::PieceSelectionLayer::OnRender()
+void qlm::PieceSelectionLayer::OnRender(const float ts)
 {
     DrawButton(x_button, x_color, "X", GREEN);
     DrawButton(o_button, o_color, "O", RED);

@@ -28,7 +28,7 @@ namespace qlm
 		GameBoardLayer(const int width, const int height, const Font &font);
 		virtual ~GameBoardLayer();
 		virtual void OnUpdate(GameState& game_status) override;
-		virtual void OnRender() override;
+		virtual void OnRender(const float ts) override;
 
 	private:
 		void DrawGrid();

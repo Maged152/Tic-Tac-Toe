@@ -17,7 +17,7 @@ void qlm::PlayModeLayer::DrawButton(const Rectangle &button,const Color button_c
     DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, YELLOW);
 }
 
-void qlm::PlayModeLayer::OnRender()
+void qlm::PlayModeLayer::OnRender(const float ts)
 {
     DrawButton(single_button, single_color, "Single Player", 20);
     DrawButton(multi_button, multi_color, "Multi Player", 50);
