@@ -1,7 +1,7 @@
 #include "layers/GameExtendLayer.hpp"
 
-qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& grid_font, const Font& text_font, const qlm::Grid& grid, const Rectangle& grid_loc)
-        : grid_font(grid_font), text_font(text_font), game_grid(grid), grid_loc(grid_loc), width(width), height(height)
+qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& grid_font, const Font& text_font, qlm::Grid& grid, Rectangle& grid_loc)
+        : grid_font(grid_font), text_font(text_font), width(width), height(height), game_grid(grid), grid_loc(grid_loc)
 {
     // Find max/min x and y coordinates in the grid
     max_x = grid_loc.x + grid_loc.width * game_grid.cols;

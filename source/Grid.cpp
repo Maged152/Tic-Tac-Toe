@@ -34,13 +34,13 @@ void qlm::Grid::Set(const qlm::Cell value)
     }
 }
 
-qlm::Cell qlm::Grid::Get(const int r, const int c)
+qlm::Cell qlm::Grid::Get(const int r, const int c) const
 {
     // safer to check range of the input but no need for it here
     return grid[r][c];
 }
 
-qlm::Cell qlm::Grid::IsGameOver(const Location last_move)
+qlm::Cell qlm::Grid::IsGameOver(const Location last_move) const
 {
     qlm::Cell winner = qlm::Cell::EMPTY;
     const int r = last_move.r;
@@ -84,7 +84,7 @@ std::ostream& operator<<(std::ostream& os, const qlm::Cell c)
 
     return os;
 }
-void qlm::Grid::Print()
+void qlm::Grid::Print() const
 {
     for (int r = 0; r < rows; r++)
     {

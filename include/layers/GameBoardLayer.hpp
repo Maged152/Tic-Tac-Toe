@@ -6,13 +6,9 @@ namespace qlm
 {
    class GameBoardLayer : public Layer
 	{
-	public:
-		Grid game_grid;
-		Rectangle grid_loc;
-		
 	private:
-		static const int cells = 9;
-        static const int cell_size = 150;
+		Grid& game_grid;
+		Rectangle& grid_loc;
 
 		Font grid_font;
 
@@ -25,7 +21,7 @@ namespace qlm
 		Cell turn = Cell::X;
 		
 	public:
-		GameBoardLayer(const int width, const int height, const Font &font);
+		GameBoardLayer(const int width, const int height, const Font &font, Grid &grid, Rectangle &grid_loc);
 		virtual ~GameBoardLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender(const float ts) override;

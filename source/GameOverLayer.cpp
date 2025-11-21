@@ -7,10 +7,10 @@ qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font&
           text_font(text_font),
           replay_color(qlm::glb::text_color),
           main_color(qlm::glb::text_color),
-          game_grid(grid),
-          grid_loc(grid_loc),
           width(width),
-          height(height)
+          height(height),
+          game_grid(grid),
+          grid_loc(grid_loc)
 {}
 
 qlm::GameOverLayer::~GameOverLayer()

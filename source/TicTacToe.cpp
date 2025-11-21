@@ -10,7 +10,7 @@
 #include <cassert>
 #include <algorithm>
 
-qlm::TicTacToe::TicTacToe()
+qlm::TicTacToe::TicTacToe() : grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}
 {}
 
 qlm::TicTacToe::~TicTacToe()
@@ -39,30 +39,14 @@ void qlm::TicTacToe::Transition(const Status new_status)
             active_layer = std::make_unique<PieceSelectionLayer>(width, height, game_font);
             break;
         case Status::GAME_BOARD:
-            active_layer = std::make_unique<GameBoardLayer>(width, height, grid_font);
+            active_layer = std::make_unique<GameBoardLayer>(width, height, grid_font, game_grid, grid_loc);
             break;
         case Status::GAME_OVER:
-        {
-            auto *gb = dynamic_cast<GameBoardLayer*>(active_layer.get());
-            assert(gb && "TicTacToe::Transition - expected GameBoardLayer for GAME_OVER");
-
-            auto saved_grid = gb->game_grid;
-            auto saved_loc = gb->grid_loc;
-
-            active_layer = std::make_unique<GameOverLayer>(width, height, grid_font, game_font, saved_grid, saved_loc);
+            active_layer = std::make_unique<GameOverLayer>(width, height, grid_font, game_font, game_grid, grid_loc);
             break;
-        }
         case Status::GAME_EXTEND:
-        {
-            auto *gb = dynamic_cast<GameBoardLayer*>(active_layer.get());
-            assert(gb && "TicTacToe::Transition - expected GameBoardLayer for GAME_EXTEND");
-
-            auto saved_grid = gb->game_grid;
-            auto saved_loc = gb->grid_loc;
-
-            active_layer = std::make_unique<GameExtendLayer>(width, height, grid_font, game_font, saved_grid, saved_loc);
+            active_layer = std::make_unique<GameExtendLayer>(width, height, grid_font, game_font, game_grid, grid_loc);
             break;
-        }
         case Status::GAME_CLOSED:
             CloseWindow();
             break;

@@ -1,9 +1,10 @@
 #include "layers/GameBoardLayer.hpp"
 #include <algorithm>
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font) : 
-                                grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}, 
-                                grid_font(font)
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font, qlm::Grid& grid, Rectangle& grid_loc) : 
+                                grid_font(font),
+                                game_grid(grid),
+                                grid_loc(grid_loc)
 {}
 
 qlm::GameBoardLayer::~GameBoardLayer()

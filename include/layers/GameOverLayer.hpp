@@ -14,8 +14,10 @@ namespace qlm
 		Rectangle replay_button, main_button;
 		Color replay_color, main_color;
 		std::string result_text = "";
-		Grid game_grid;
-		Rectangle grid_loc;
+
+		const Grid& game_grid;
+		const Rectangle& grid_loc;
+
 		Font grid_font, text_font;
 		int width, height;
 		
