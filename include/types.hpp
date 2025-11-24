@@ -53,14 +53,20 @@ namespace qlm
 
         private:
             Cell grid[cols][rows];
+            Location last_move;
 
         public:
             Grid();
             Grid(const Grid& other);
+
             void Set(const int c, const int r, const qlm::Cell value);
             void Set(const qlm::Cell value);
             Cell Get(const int c, const int r) const;
-            Cell IsGameOver(const Location last_move) const;
+
+            void SetLastMove(const int r, const int c);
+            Location GetLastMove() const;
+            
+            Cell IsGameOver(const Location move) const;
             void Print() const;
     };
 

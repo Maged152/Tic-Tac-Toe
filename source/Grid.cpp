@@ -40,11 +40,21 @@ qlm::Cell qlm::Grid::Get(const int r, const int c) const
     return grid[r][c];
 }
 
-qlm::Cell qlm::Grid::IsGameOver(const Location last_move) const
+void qlm::Grid::SetLastMove(const int r, const int c)
+{
+    last_move.Set(r, c);
+}
+
+qlm::Location qlm::Grid::GetLastMove() const
+{
+    return last_move;
+}
+
+qlm::Cell qlm::Grid::IsGameOver(const Location move) const
 {
     qlm::Cell winner = qlm::Cell::EMPTY;
-    const int r = last_move.r;
-    const int c = last_move.c;
+    const int r = move.r;
+    const int c = move.c;
     
     // Check the row of the last move
     if (this->Get(r, 0) == this->Get(r, 1) && this->Get(r, 1) == this->Get(r, 2))

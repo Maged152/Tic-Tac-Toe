@@ -5,14 +5,17 @@ qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Fon
                                 grid_font(font),
                                 game_grid(grid),
                                 grid_loc(grid_loc)
-{}
+{
+    // reset the grid
+    game_grid.Set(qlm::Cell::EMPTY);
+}
 
 qlm::GameBoardLayer::~GameBoardLayer()
 {}
 
 void qlm::GameBoardLayer::IsGameOver(GameState &game_status)
 {
-    game_status.winner = game_grid.IsGameOver(last_move);
+    game_status.winner = game_grid.IsGameOver(game_grid.GetLastMove());
 
     if (game_status.winner != Cell::EMPTY)
     {
@@ -95,7 +98,7 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
                         game_grid.Set(r, c, turn);
-                        last_move.Set(r, c);
+                        game_grid.SetLastMove(r, c);
                         turn = Toggle(turn);
                         round++;
                     }
@@ -174,11 +177,11 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
 
 void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
 {
-    const auto best_move = MiniMax(Toggle(game_status.player_piece), last_move, round);
+    const auto best_move = MiniMax(Toggle(game_status.player_piece), game_grid.GetLastMove(), round);
 
     // do the move
     game_grid.Set(best_move.move.r, best_move.move.c, Toggle(game_status.player_piece));
-    last_move.Set(best_move.move.r, best_move.move.c);
+    game_grid.SetLastMove(best_move.move.r, best_move.move.c);
     turn = Toggle(turn);
     round++;
 }

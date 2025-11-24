@@ -12,8 +12,6 @@ namespace qlm
 
 		Font grid_font;
 
-		Location last_move;
-
 		Color hover_color = WHITE;
 		Rectangle hover_cell;
 
