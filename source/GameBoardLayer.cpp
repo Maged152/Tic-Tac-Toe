@@ -214,7 +214,7 @@ void qlm::GameBoardLayer::OnUpdate(qlm::GameState &game_status)
         IsGameOver(game_status);
 
         // check for draw
-        if (round == 9)
+        if (round == 9 && game_status.status != Status::GAME_OVER)
         {
             game_status.status = game_status.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
         }
