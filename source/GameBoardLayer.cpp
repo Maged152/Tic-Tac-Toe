@@ -1,10 +1,7 @@
 #include "layers/GameBoardLayer.hpp"
 #include <algorithm>
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font, qlm::Grid& grid, Rectangle& grid_loc) : 
-                                grid_font(font),
-                                game_grid(grid),
-                                grid_loc(grid_loc)
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, qlm::Grid& grid) : game_grid(grid)
 {
     // reset the grid
     game_grid.Set(qlm::Cell::EMPTY);
@@ -23,46 +20,6 @@ void qlm::GameBoardLayer::IsGameOver(GameState &game_status)
     }
 }
 
-void qlm::GameBoardLayer::DrawGrid()
-{
-    // Draw vertical lines
-    for (int i = 1; i < game_grid.cols; i++)
-    {
-        DrawLineEx({i * grid_loc.width + grid_loc.x, grid_loc.y}, 
-                   {i * grid_loc.width + grid_loc.x, grid_loc.y + game_grid.cols * grid_loc.height},
-                   7, qlm::glb::text_color);
-    }
-
-    // Draw horizontal lines
-    for (int i = 1; i < game_grid.rows; i++)
-    {
-        DrawLineEx({grid_loc.x, i * grid_loc.height + grid_loc.y}, 
-                   {game_grid.rows * grid_loc.width + grid_loc.x, grid_loc.y + i * grid_loc.height},
-                   7, qlm::glb::text_color);
-    }
-
-    // Loop through the grid array and draw X or O
-    for (int col = 0; col < game_grid.cols; col++)
-    {
-        for (int row = 0; row < game_grid.rows; row++)
-        {
-            // Calculate the center of the current cell
-            const float x_pos = row * grid_loc.width + grid_loc.x + 40;
-            const float y_pos = col * grid_loc.height + grid_loc.y + 20;
-
-            const Cell cell_value = game_grid.Get(row, col);
-
-            if (cell_value == Cell::X)
-            {
-                DrawTextEx(grid_font, "X", {x_pos, y_pos}, 120, 10, GREEN);
-            }
-            else if (cell_value == Cell::O)
-            {
-                DrawTextEx(grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
-            }
-        }
-    }
-}
 
 qlm::Cell qlm::GameBoardLayer::Toggle(const qlm::Cell current)
 {
@@ -75,19 +32,19 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
     // Get mouse position
     const Vector2 mouse_Point = GetMousePosition();
 
-    for (int r = 0; r < game_grid.rows; r++)
+    for (int y = 0; y < game_grid.rows; y++)
     {
-        for (int c = 0; c < game_grid.cols; c++)
+        for (int x = 0; x < game_grid.cols; x++)
         {
-            const Cell cur_cell = game_grid.Get(r, c);
+            const Cell cur_cell = game_grid.Get(x, y);
 
             if (cur_cell == Cell::EMPTY)
             {
                 Rectangle cell = {
-                        r * grid_loc.width + grid_loc.x, 
-                        c * grid_loc.height + grid_loc.y,
-                        (float)grid_loc.width,
-                        (float)grid_loc.height
+                        x * game_grid.cell_size + game_grid.pos.x, 
+                        y * game_grid.cell_size + game_grid.pos.y,
+                        (float)game_grid.cell_size,
+                        (float)game_grid.cell_size
                     };
                 // Check if the mouse is over this cell
                 if (CheckCollisionPointRec(mouse_Point, cell))
@@ -97,8 +54,8 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
 
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
-                        game_grid.Set(r, c, turn);
-                        game_grid.SetLastMove(r, c);
+                        game_grid.Set(x, y, turn);
+                        game_grid.SetLastMove(x, y);
                         turn = Toggle(turn);
                         round++;
                     }
@@ -129,20 +86,20 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
     qlm::Location best_move {};
 
     // Iterate over all possible moves
-    for (int r = 0; r < game_grid.rows; r++) 
+    for (int y = 0; y < game_grid.rows; y++) 
     {
-        for (int c = 0; c < game_grid.cols; c++) 
+        for (int x = 0; x < game_grid.cols; x++) 
         {
-            if (game_grid.Get(r, c) == qlm::Cell::EMPTY)
+            if (game_grid.Get(x, y) == qlm::Cell::EMPTY)
             {
                 // make a move
-                game_grid.Set(r, c, player);
+                game_grid.Set(x, y, player);
 
-                auto res = MiniMax(Toggle(player), {r, c}, cur_round + 1, best_for_x, best_for_o);
+                auto res = MiniMax(Toggle(player), {x, y}, cur_round + 1, best_for_x, best_for_o);
                 const int move_score = res.score;
 
                 // undo the move
-                game_grid.Set(r, c, qlm::Cell::EMPTY);
+                game_grid.Set(x, y, qlm::Cell::EMPTY);
 
                 if (player == qlm::Cell::X)
                 {
@@ -150,7 +107,7 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
                     // Maximize score for X
                     if (move_score > best_score) {
                         best_score = move_score;
-                        best_move.Set(r, c);
+                        best_move.Set(x, y);
                     }
                 } 
                 else 
@@ -160,7 +117,7 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
                     if (move_score < best_score) 
                     {
                         best_score = move_score;
-                        best_move.Set(r, c);
+                        best_move.Set(x, y);
                     }
                 }
 
@@ -180,15 +137,15 @@ void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
     const auto best_move = MiniMax(Toggle(game_status.player_piece), game_grid.GetLastMove(), round);
 
     // do the move
-    game_grid.Set(best_move.move.r, best_move.move.c, Toggle(game_status.player_piece));
-    game_grid.SetLastMove(best_move.move.r, best_move.move.c);
+    game_grid.Set(best_move.move.x, best_move.move.y, Toggle(game_status.player_piece));
+    game_grid.SetLastMove(best_move.move.x, best_move.move.y);
     turn = Toggle(turn);
     round++;
 }
 
 void qlm::GameBoardLayer::OnRender(const float ts)
 {
-    DrawGrid();
+    game_grid.DrawGrid();
 
     if (hover_color.r != 255 || hover_color.g != 255 || hover_color.b != 255)
     {

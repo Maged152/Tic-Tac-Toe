@@ -8,21 +8,16 @@ namespace qlm
 	{
 	private:
 		Grid& game_grid;
-		Rectangle& grid_loc;
-		Font grid_font, text_font;
+		Font text_font;
 		int width, height;
 
-		Location last_move;
-		int max_x, min_x, max_y, min_y; // borders
+		Direction extend_direction;
 		
 	public:
-		GameExtendLayer(const int width, const int height, const Font& grid_font, const Font& text_font, Grid& grid, Rectangle& grid_loc);
+		GameExtendLayer(const int width, const int height, const Font& text_font, Grid& grid);
 		virtual ~GameExtendLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender(const float ts) override;
-
-	private:
-		void DrawGrid();
 	};
 
 }

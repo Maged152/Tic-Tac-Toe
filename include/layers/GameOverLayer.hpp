@@ -16,20 +16,18 @@ namespace qlm
 		std::string result_text = "";
 
 		const Grid& game_grid;
-		const Rectangle& grid_loc;
 
-		Font grid_font, text_font;
+		Font text_font;
 		int width, height;
 		
 	public:
-		GameOverLayer(const int width, const int height, const Font& grid_font, const Font& text_font, const Grid& grid, const Rectangle& grid_loc);
+		GameOverLayer(const int width, const int height, const Font& text_font, const Grid& grid);
 		virtual ~GameOverLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender(const float ts) override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);
-		void DrawGrid();
 	};
 
 }

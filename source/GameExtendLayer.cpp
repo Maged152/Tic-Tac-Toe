@@ -1,66 +1,64 @@
 #include "layers/GameExtendLayer.hpp"
+#include <random>
+#include <iostream>
 
-qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& grid_font, const Font& text_font, qlm::Grid& grid, Rectangle& grid_loc)
-        : grid_font(grid_font), text_font(text_font), width(width), height(height), game_grid(grid), grid_loc(grid_loc)
+qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& text_font, qlm::Grid& grid)
+        : text_font(text_font), width(width), height(height), game_grid(grid)
 {
-    // Find max/min x and y coordinates in the grid
-    max_x = grid_loc.x + grid_loc.width * game_grid.cols;
-    min_x = grid_loc.x;
-
-    max_y = grid_loc.y + grid_loc.height * game_grid.rows;
-    min_y = grid_loc.y;
+    // Find extend direction based on last move
+    Location last_move = game_grid.GetLastMove();
+    std::cout << "Last move x = " << last_move.x << ", y = " << last_move.y << std::endl;
+    if (last_move.x == 0) 
+    {
+        extend_direction = Direction::LEFT;
+    }
+    else if (last_move.x == 2) 
+    {
+        extend_direction = Direction::RIGHT;
+    }
+    else if (last_move.y == 0)
+    {
+        extend_direction = Direction::UP;
+    }
+    else if (last_move.y == 2)
+    {
+        extend_direction = Direction::DOWN;
+    }
+    else 
+    {
+        // randomly choose a direction if last move is in the center
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        
+        // Create a distribution from 0 to 3 (4 values)
+        std::uniform_int_distribution<> dis(0, 3);
+        const int dir = dis(gen);
+        extend_direction = static_cast<Direction>(dir);
+    }
 }
 
 qlm::GameExtendLayer::~GameExtendLayer()
 {}
 
-void qlm::GameExtendLayer::DrawGrid()
-{
-    // Draw vertical lines
-    for (int i = 1; i < game_grid.cols; i++)
-    {
-        DrawLineEx({i * grid_loc.width + grid_loc.x, grid_loc.y}, 
-                   {i * grid_loc.width + grid_loc.x, grid_loc.y + game_grid.cols * grid_loc.height},
-                   7, qlm::glb::text_color);
-    }
-
-    // Draw horizontal lines
-    for (int i = 1; i < game_grid.rows; i++)
-    {
-        DrawLineEx({grid_loc.x, i * grid_loc.height + grid_loc.y}, 
-                   {game_grid.rows * grid_loc.width + grid_loc.x, grid_loc.y + i * grid_loc.height},
-                   7, qlm::glb::text_color);
-    }
-
-    // Loop through the grid array and draw X or O
-    for (int col = 0; col < game_grid.cols; col++)
-    {
-        for (int row = 0; row < game_grid.rows; row++)
-        {
-            // Calculate the center of the current cell
-            const float x_pos = row * grid_loc.width + grid_loc.x + 40;
-            const float y_pos = col * grid_loc.height + grid_loc.y + 20;
-
-            const Cell cell_value = game_grid.Get(row, col);
-
-            if (cell_value == Cell::X)
-            {
-                DrawTextEx(grid_font, "X", {x_pos, y_pos}, 120, 10, GREEN);
-            }
-            else if (cell_value == Cell::O)
-            {
-                DrawTextEx(grid_font, "O", {x_pos, y_pos}, 120, 10, RED);
-            }
-        }
-    }
-
-    DrawCircle(min_x, min_y, 5.0f, BLUE);
-    DrawCircle(max_x, max_y, 5.0f, BLUE);
-}
-
 void qlm::GameExtendLayer::OnRender(const float ts)
 {
-    DrawGrid();
+    game_grid.DrawGrid();
+
+    switch (extend_direction)
+    {
+        case Direction::LEFT:
+            DrawCircle(1 * game_grid.pos.width + game_grid.pos.x + 40,  game_grid.pos.y + 20, 30, BLUE);
+            break;
+        case Direction::RIGHT:
+            DrawCircle(1 * game_grid.pos.width + game_grid.pos.x + 40, 2 * game_grid.pos.height + game_grid.pos.y + 20, 30, RED);
+            break;
+        case Direction::UP:
+            DrawCircle(game_grid.pos.x + 40, 1 * game_grid.pos.height + game_grid.pos.y + 20, 30, YELLOW);
+            break;
+        case Direction::DOWN:
+            DrawCircle(2 * game_grid.pos.width + game_grid.pos.x + 40, 1 * game_grid.pos.height + game_grid.pos.y + 20, 30, BLACK);
+            break;
+    }
 }
 
 void qlm::GameExtendLayer::OnUpdate(GameState& game_status)

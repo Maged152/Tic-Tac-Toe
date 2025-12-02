@@ -10,7 +10,8 @@
 #include <cassert>
 #include <algorithm>
 
-qlm::TicTacToe::TicTacToe() : grid_loc {width / 2.0f - 253, height / 2.0f - 180, cell_size, cell_size}
+qlm::TicTacToe::TicTacToe() : grid_loc {width / 2.0f - 253, height / 2.0f - 180, game_grid.cell_size * game_grid.cols, game_grid.cell_size * game_grid.rows},
+                                game_grid(width, height, grid_font)
 {}
 
 qlm::TicTacToe::~TicTacToe()
@@ -39,13 +40,13 @@ void qlm::TicTacToe::Transition(const Status new_status)
             active_layer = std::make_unique<PieceSelectionLayer>(width, height, game_font);
             break;
         case Status::GAME_BOARD:
-            active_layer = std::make_unique<GameBoardLayer>(width, height, grid_font, game_grid, grid_loc);
+            active_layer = std::make_unique<GameBoardLayer>(width, height, game_grid);
             break;
         case Status::GAME_OVER:
-            active_layer = std::make_unique<GameOverLayer>(width, height, grid_font, game_font, game_grid, grid_loc);
+            active_layer = std::make_unique<GameOverLayer>(width, height, game_font, game_grid);
             break;
         case Status::GAME_EXTEND:
-            active_layer = std::make_unique<GameExtendLayer>(width, height, grid_font, game_font, game_grid, grid_loc);
+            active_layer = std::make_unique<GameExtendLayer>(width, height, game_font, game_grid);
             break;
         case Status::GAME_CLOSED:
             CloseWindow();

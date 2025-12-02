@@ -1,48 +1,48 @@
 #include "types.hpp"
 #include <iostream>
 
-qlm::Grid::Grid()
+qlm::Grid::Grid(const int width, const int height, Font &font) : font {font} ,
+     pos {width / 2.0f - 253, height / 2.0f - 180, qlm::Grid::cell_size * qlm::Grid::Grid::cols, qlm::Grid::Grid::cell_size * qlm::Grid::Grid::rows}
 {
     this->Set(qlm::Cell::EMPTY);
 }
 
-qlm::Grid::Grid(const qlm::Grid &other)
+qlm::Grid::Grid(const qlm::Grid &other) : font {other.font}
 {
-    for (int r = 0; r < rows; r++) 
+    for (int y = 0; y < rows; y++) 
     {
-        for (int c = 0; c < cols; c++)
+        for (int x = 0; x < cols; x++)
         {
-            grid[r][c] = other.grid[r][c];
+            grid[y][x] = other.grid[y][x];
         }
     }
 }
 
-void qlm::Grid::Set(const int r, const int c, const qlm::Cell value)
+void qlm::Grid::Set(const int x, const int y, const qlm::Cell value)
 {
     // safer to check range of the input but no need for it here
-    grid[r][c] = value;
+    grid[y][x] = value;
 }
 
 void qlm::Grid::Set(const qlm::Cell value)
 {
-    for (int r = 0; r < rows; r++) 
+    for (int y = 0; y < rows; y++) 
     {
-        for (int c = 0; c < cols; c++)
+        for (int x = 0; x < cols; x++)
         {
-            grid[r][c] = value;
+            grid[y][x] = value;
         }
     }
 }
 
-qlm::Cell qlm::Grid::Get(const int r, const int c) const
+qlm::Cell qlm::Grid::Get(const int x, const int y) const
 {
-    // safer to check range of the input but no need for it here
-    return grid[r][c];
+    return grid[y][x];
 }
 
-void qlm::Grid::SetLastMove(const int r, const int c)
+void qlm::Grid::SetLastMove(const int x, const int y)
 {
-    last_move.Set(r, c);
+    last_move.Set(x, y);
 }
 
 qlm::Location qlm::Grid::GetLastMove() const
@@ -53,21 +53,21 @@ qlm::Location qlm::Grid::GetLastMove() const
 qlm::Cell qlm::Grid::IsGameOver(const Location move) const
 {
     qlm::Cell winner = qlm::Cell::EMPTY;
-    const int r = move.r;
-    const int c = move.c;
+    const int y = move.y;
+    const int x = move.x;
     
     // Check the row of the last move
-    if (this->Get(r, 0) == this->Get(r, 1) && this->Get(r, 1) == this->Get(r, 2))
+    if (this->Get(0, y) == this->Get(1, y) && this->Get(1, y) == this->Get(2, y))
     {
-        winner = this->Get(r, 0);
+        winner = this->Get(0, y);
     }
     // Check the column of the last move
-    else if (this->Get(0, c) == this->Get(1, c) && this->Get(1, c) == this->Get(2, c))
+    else if (this->Get(x, 0) == this->Get(x, 1) && this->Get(x, 1) == this->Get(x, 2))
     {
-        winner = this->Get(0, c);
+        winner = this->Get(x, 0);
     }
     // Check the main diagonal if the last move is on it
-    else if (c == r)
+    else if (x == y)
     {
         if (this->Get(0, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(2, 2))
         {
@@ -75,15 +75,56 @@ qlm::Cell qlm::Grid::IsGameOver(const Location move) const
         }
     }
     // Check the anti-diagonal if the last move is on it
-    else if (r + c == 2)
+    else if (y + x == 2)
     {
-        if (this->Get(0, 2) == this->Get(1, 1) && this->Get(1, 1) == this->Get(2, 0))
+        if (this->Get(2, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(0, 2))
         {
-            winner = this->Get(0, 2);
+            winner = this->Get(2, 0);
         }
     }
 
     return winner;
+}
+
+void qlm::Grid::DrawGrid() const
+{
+    // Draw vertical lines
+    for (int i = 1; i < cols; i++)
+    {
+        DrawLineEx({i * cell_size + pos.x, pos.y}, 
+                   {i * cell_size + pos.x, pos.y + rows * cell_size},
+                   7, qlm::glb::text_color);
+    }
+
+    // Draw horizontal lines
+    for (int i = 1; i < rows; i++)
+    {
+        DrawLineEx({pos.x, i * cell_size + pos.y}, 
+                   {pos.x + cols * cell_size, pos.y + i * cell_size},
+                   7, qlm::glb::text_color);
+    }
+
+    // Loop through the grid array and draw X or O
+    for (int y = 0; y < rows; y++)
+    {
+        for (int x = 0; x < cols; x++)
+        {
+            // Calculate the center of the current cell
+            const float x_pos = x * cell_size + pos.x + 40;
+            const float y_pos = y * cell_size + pos.y + 20;
+
+            const Cell cell_value = Get(x, y);
+
+            if (cell_value == Cell::X)
+            {
+                DrawTextEx(font, "X", {x_pos, y_pos}, 120, 10, GREEN);
+            }
+            else if (cell_value == Cell::O)
+            {
+                DrawTextEx(font, "O", {x_pos, y_pos}, 120, 10, RED);
+            }
+        }
+    }
 }
 
 std::ostream& operator<<(std::ostream& os, const qlm::Cell c) 
@@ -96,12 +137,12 @@ std::ostream& operator<<(std::ostream& os, const qlm::Cell c)
 }
 void qlm::Grid::Print() const
 {
-    for (int r = 0; r < rows; r++)
+    for (int y = 0; y < rows; y++)
     {
         std::cout << "| ";
-        for (int c = 0; c < cols; c++)
+        for (int x = 0; x < cols; x++)
         {
-            std::cout << this->Get(r, c) << " |";
+            std::cout << this->Get(x, y) << " |";
         }
         std::cout << "\n";
     }

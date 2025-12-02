@@ -10,7 +10,6 @@ namespace qlm
         private:
             static constexpr int width = 1000;
             static constexpr int height = 600;
-            static constexpr int cell_size = 150;
 
             Font game_font;
             Font grid_font;
