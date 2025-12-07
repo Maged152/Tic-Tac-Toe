@@ -11,6 +11,8 @@ namespace qlm
 		Font text_font;
 		int width, height;
 
+		bool moved = false, shifted = false;
+
 		Direction extend_direction;
 		
 	public:
@@ -18,6 +20,10 @@ namespace qlm
 		virtual ~GameExtendLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender(const float ts) override;
+
+	private:
+		void RemoveMoves(const Direction dir);
+		void ShiftGrid(const Direction dir);
 	};
 
 }

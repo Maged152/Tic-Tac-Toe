@@ -1,6 +1,6 @@
 #include "layers/GameOverLayer.hpp"
 
-qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font& text_font, const qlm::Grid& grid)
+qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font& text_font, qlm::Grid& grid)
         : replay_button {width / 2.0f - button_width - 20, height / 2.0f + 20, button_width, button_height},
           main_button {width / 2.0f + 20, height / 2.0f + 20, button_width, button_height},
           text_font(text_font),
@@ -12,7 +12,12 @@ qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font&
 {}
 
 qlm::GameOverLayer::~GameOverLayer()
-{}
+{
+    // reset the grid
+    game_grid.Set(qlm::Cell::EMPTY);
+    game_grid.round = 0;
+    game_grid.turn = qlm::Cell::X;
+}
 
 void qlm::GameOverLayer::DrawButton(const Rectangle &button, const Color button_color, const char *text, const Color text_color)
 {

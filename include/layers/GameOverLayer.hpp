@@ -15,13 +15,13 @@ namespace qlm
 		Color replay_color, main_color;
 		std::string result_text = "";
 
-		const Grid& game_grid;
+		Grid& game_grid;
 
 		Font text_font;
 		int width, height;
 		
 	public:
-		GameOverLayer(const int width, const int height, const Font& text_font, const Grid& grid);
+		GameOverLayer(const int width, const int height, const Font& text_font, Grid& grid);
 		virtual ~GameOverLayer();
 		virtual void OnUpdate(GameState& game_status) override;
 		virtual void OnRender(const float ts) override;

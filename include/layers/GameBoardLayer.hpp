@@ -11,9 +11,6 @@ namespace qlm
 
 		Color hover_color = WHITE;
 		Rectangle hover_cell;
-
-		int round = 0;
-		Cell turn = Cell::X;
 		
 	public:
 		GameBoardLayer(const int width, const int height, Grid &grid);

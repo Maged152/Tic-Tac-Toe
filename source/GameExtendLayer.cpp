@@ -1,28 +1,33 @@
 #include "layers/GameExtendLayer.hpp"
 #include <random>
-#include <iostream>
 
 qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& text_font, qlm::Grid& grid)
         : text_font(text_font), width(width), height(height), game_grid(grid)
 {
-    // Find extend direction based on last move
+    game_grid.round = 6;
+    
+    // correct the last move position & Find extend direction based on last move
     Location last_move = game_grid.GetLastMove();
-    std::cout << "Last move x = " << last_move.x << ", y = " << last_move.y << std::endl;
+
     if (last_move.x == 0) 
     {
-        extend_direction = Direction::LEFT;
+        extend_direction = Direction::RIGHT;
+        game_grid.SetLastMove(last_move.x + 1, last_move.y);
     }
     else if (last_move.x == 2) 
     {
-        extend_direction = Direction::RIGHT;
+        extend_direction = Direction::LEFT;
+        game_grid.SetLastMove(last_move.x - 1, last_move.y);
     }
     else if (last_move.y == 0)
     {
-        extend_direction = Direction::UP;
+        extend_direction = Direction::DOWN;
+        game_grid.SetLastMove(last_move.x, last_move.y + 1);
     }
     else if (last_move.y == 2)
     {
-        extend_direction = Direction::DOWN;
+        extend_direction = Direction::UP;
+        game_grid.SetLastMove(last_move.x, last_move.y - 1);
     }
     else 
     {
@@ -40,28 +45,97 @@ qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const F
 qlm::GameExtendLayer::~GameExtendLayer()
 {}
 
+void qlm::GameExtendLayer::RemoveMoves(const Direction dir)
+{
+    if (dir == Direction::LEFT)
+    {
+        for (int y = 0; y < game_grid.rows; y++)
+        {
+            game_grid.Set(0, y, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::RIGHT)
+    {
+        for (int y = 0; y < game_grid.rows; y++)
+        {
+            game_grid.Set(2, y, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::UP)
+    {
+        for (int x = 0; x < game_grid.cols; x++)
+        {
+            game_grid.Set(x, 0, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::DOWN)
+    {
+        for (int x = 0; x < game_grid.cols; x++)
+        {
+            game_grid.Set(x, 2, qlm::Cell::EMPTY);
+        }
+    }
+
+    moved = true;
+}
+
+void qlm::GameExtendLayer::ShiftGrid(const Direction dir)
+{
+    if (dir == Direction::LEFT)
+    {
+        for (int y = 0; y < game_grid.rows; y++)
+        {
+            game_grid.Set(0, y, game_grid.Get(1, y));
+            game_grid.Set(1, y, game_grid.Get(2, y));
+            game_grid.Set(2, y, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::RIGHT)
+    {
+        for (int y = 0; y < game_grid.rows; y++)
+        {
+            game_grid.Set(2, y, game_grid.Get(1, y));
+            game_grid.Set(1, y, game_grid.Get(0, y));
+            game_grid.Set(0, y, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::UP)
+    {
+        for (int x = 0; x < game_grid.cols; x++)
+        {
+            game_grid.Set(x, 0, game_grid.Get(x, 1));
+            game_grid.Set(x, 1, game_grid.Get(x, 2));
+            game_grid.Set(x, 2, qlm::Cell::EMPTY);
+        }
+    }
+    else if (dir == Direction::DOWN)
+    {
+        for (int x = 0; x < game_grid.cols; x++)
+        {
+            game_grid.Set(x, 2, game_grid.Get(x, 1));
+            game_grid.Set(x, 1, game_grid.Get(x, 0));
+            game_grid.Set(x, 0, qlm::Cell::EMPTY);
+        }
+    }
+
+    shifted = true;
+}
+
 void qlm::GameExtendLayer::OnRender(const float ts)
 {
     game_grid.DrawGrid();
-
-    switch (extend_direction)
-    {
-        case Direction::LEFT:
-            DrawCircle(1 * game_grid.pos.width + game_grid.pos.x + 40,  game_grid.pos.y + 20, 30, BLUE);
-            break;
-        case Direction::RIGHT:
-            DrawCircle(1 * game_grid.pos.width + game_grid.pos.x + 40, 2 * game_grid.pos.height + game_grid.pos.y + 20, 30, RED);
-            break;
-        case Direction::UP:
-            DrawCircle(game_grid.pos.x + 40, 1 * game_grid.pos.height + game_grid.pos.y + 20, 30, YELLOW);
-            break;
-        case Direction::DOWN:
-            DrawCircle(2 * game_grid.pos.width + game_grid.pos.x + 40, 1 * game_grid.pos.height + game_grid.pos.y + 20, 30, BLACK);
-            break;
-    }
 }
 
 void qlm::GameExtendLayer::OnUpdate(GameState& game_status)
 {
+    if (!moved) {
+        RemoveMoves(extend_direction);
+    } else if (!shifted) {
+        ShiftGrid(extend_direction);
+    } else {
+        // Extension complete, transition back to game board
+        game_status.status = qlm::Status::GAME_BOARD;
+        return;
+    }
     game_status.status = qlm::Status::NO_CHANGE;
 }

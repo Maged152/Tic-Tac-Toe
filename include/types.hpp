@@ -59,7 +59,9 @@ namespace qlm
             static const int rows = 3;
             static const int cols = 3;
             static constexpr int cell_size = 150;
+            int round = 0;
             Rectangle pos;
+            Cell turn = Cell::X;
 
         private:
             Cell grid[rows][cols];

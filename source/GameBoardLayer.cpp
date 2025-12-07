@@ -2,10 +2,7 @@
 #include <algorithm>
 
 qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, qlm::Grid& grid) : game_grid(grid)
-{
-    // reset the grid
-    game_grid.Set(qlm::Cell::EMPTY);
-}
+{}
 
 qlm::GameBoardLayer::~GameBoardLayer()
 {}
@@ -49,15 +46,15 @@ void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
                 // Check if the mouse is over this cell
                 if (CheckCollisionPointRec(mouse_Point, cell))
                 {
-                    hover_color = turn == Cell::X ? GREEN : RED;
+                    hover_color = game_grid.turn == Cell::X ? GREEN : RED;
                     hover_cell = cell;
 
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
-                        game_grid.Set(x, y, turn);
+                        game_grid.Set(x, y, game_grid.turn);
                         game_grid.SetLastMove(x, y);
-                        turn = Toggle(turn);
-                        round++;
+                        game_grid.turn = Toggle(game_grid.turn);
+                        game_grid.round++;
                     }
                 }
             }
@@ -134,13 +131,13 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
 
 void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
 {
-    const auto best_move = MiniMax(Toggle(game_status.player_piece), game_grid.GetLastMove(), round);
+    const auto best_move = MiniMax(Toggle(game_status.player_piece), game_grid.GetLastMove(), game_grid.round);
 
     // do the move
     game_grid.Set(best_move.move.x, best_move.move.y, Toggle(game_status.player_piece));
     game_grid.SetLastMove(best_move.move.x, best_move.move.y);
-    turn = Toggle(turn);
-    round++;
+    game_grid.turn = Toggle(game_grid.turn);
+    game_grid.round++;
 }
 
 void qlm::GameBoardLayer::OnRender(const float ts)
@@ -162,16 +159,16 @@ void qlm::GameBoardLayer::OnUpdate(qlm::GameState &game_status)
     }
     else
     {
-        if (turn == game_status.player_piece) MakeMove(game_status);
+        if (game_grid.turn == game_status.player_piece) MakeMove(game_status);
         else BestMove(game_status);
     }
     
-    if (round > 4)
+    if (game_grid.round > 4)
     {
         IsGameOver(game_status);
 
         // check for draw
-        if (round == 9 && game_status.status != Status::GAME_OVER)
+        if (game_grid.round == 9 && game_status.status != Status::GAME_OVER)
         {
             game_status.status = game_status.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
         }
