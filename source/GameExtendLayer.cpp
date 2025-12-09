@@ -6,40 +6,74 @@ qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const F
 {
     game_grid.round = 6;
     
+    // randomly choose a direction if needed
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    
+    // Create a distribution from 0 to 3 (4 values)
+    std::uniform_int_distribution<> dis_4(0, 3);
+    std::uniform_int_distribution<> dis_2(0, 1);
+
     // correct the last move position & Find extend direction based on last move
     Location last_move = game_grid.GetLastMove();
 
-    if (last_move.x == 0) 
+    if (last_move.x == 0 && last_move.y == 0) 
+    {
+        // Top-left corner: random between RIGHT or DOWN
+        extend_direction = dis_2(gen) == 0 ? Direction::RIGHT : Direction::DOWN;
+    }
+    else if (last_move.x == 2 && last_move.y == 0) 
+    {
+        // Top-right corner: random between LEFT or DOWN
+        extend_direction = dis_2(gen) == 0 ? Direction::LEFT : Direction::DOWN;
+    }
+    else if (last_move.x == 0 && last_move.y == 2)
+    {
+        // Bottom-left corner: random between RIGHT or UP
+        extend_direction = dis_2(gen) == 0 ? Direction::RIGHT : Direction::UP;
+    }
+    else if (last_move.x == 2 && last_move.y == 2)
+    {
+        // Bottom-right corner: random between LEFT or UP
+        extend_direction = dis_2(gen) == 0 ? Direction::LEFT : Direction::UP;
+    }
+    else if (last_move.x == 0) 
     {
         extend_direction = Direction::RIGHT;
-        game_grid.SetLastMove(last_move.x + 1, last_move.y);
     }
     else if (last_move.x == 2) 
     {
         extend_direction = Direction::LEFT;
-        game_grid.SetLastMove(last_move.x - 1, last_move.y);
     }
     else if (last_move.y == 0)
     {
         extend_direction = Direction::DOWN;
-        game_grid.SetLastMove(last_move.x, last_move.y + 1);
     }
     else if (last_move.y == 2)
     {
         extend_direction = Direction::UP;
-        game_grid.SetLastMove(last_move.x, last_move.y - 1);
     }
     else 
     {
-        // randomly choose a direction if last move is in the center
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        
-        // Create a distribution from 0 to 3 (4 values)
-        std::uniform_int_distribution<> dis(0, 3);
-        const int dir = dis(gen);
+        const int dir = dis_4(gen);
         extend_direction = static_cast<Direction>(dir);
     }
+
+    switch (extend_direction) 
+    {
+        case Direction::RIGHT:
+            game_grid.SetLastMove(last_move.x + 1, last_move.y);
+            break;
+        case Direction::LEFT:
+            game_grid.SetLastMove(last_move.x - 1, last_move.y);
+            break;
+        case Direction::UP:
+            game_grid.SetLastMove(last_move.x, last_move.y - 1);
+            break;
+        case Direction::DOWN:
+            game_grid.SetLastMove(last_move.x, last_move.y + 1);
+            break;
+    };
 }
 
 qlm::GameExtendLayer::~GameExtendLayer()
