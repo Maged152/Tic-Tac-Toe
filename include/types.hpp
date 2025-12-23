@@ -66,10 +66,9 @@ namespace qlm
         private:
             Cell grid[rows][cols];
             Location last_move;
-            Font& font;
-
+            
         public:
-            Grid(const int width, const int height, Font &font);
+            Grid(const int width, const int height);
             Grid(const Grid& other);
 
             void Set(const int x, const int y, const qlm::Cell value);
@@ -79,7 +78,7 @@ namespace qlm
             void SetLastMove(const int x, const int y);
             Location GetLastMove() const;
 
-            void DrawGrid() const;
+            void DrawGrid(const Font& font) const;
             
             Cell IsGameOver(const Location move) const;
             void Print() const;
@@ -99,5 +98,19 @@ namespace qlm
             player_piece = Cell::EMPTY;
             winner = Cell::EMPTY;
         }
+    };
+
+    struct GameContext
+    {
+        int width;
+        int height;
+        Grid grid;
+        Font font;
+
+        GameContext(int w, int h, const Font& f) : width(w), height(h), grid(w, h), font(f) 
+        {}
+
+        GameContext(int w, int h) : width(w), height(h), grid(w, h)
+        {}
     };
 }

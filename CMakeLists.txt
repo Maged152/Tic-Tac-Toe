@@ -33,6 +33,9 @@ add_library(NameSpace::${lib_name} ALIAS ${lib_name})
 # Create executable for the game
 add_executable(${exec_name} main.cpp)  
 target_link_libraries(${exec_name} PRIVATE ${lib_name})
+set_target_properties(${exec_name} PROPERTIES 
+                        CXX_STANDARD 20
+                        CXX_EXTENSIONS OFF)
 
 # install the game
 install(TARGETS ${exec_name}

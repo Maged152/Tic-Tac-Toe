@@ -1,13 +1,13 @@
 #include "types.hpp"
 #include <iostream>
 
-qlm::Grid::Grid(const int width, const int height, Font &font) : font {font} ,
+qlm::Grid::Grid(const int width, const int height) :
      pos {width / 2.0f - 253, height / 2.0f - 180, qlm::Grid::cell_size * qlm::Grid::Grid::cols, qlm::Grid::Grid::cell_size * qlm::Grid::Grid::rows}
 {
     this->Set(qlm::Cell::EMPTY);
 }
 
-qlm::Grid::Grid(const qlm::Grid &other) : font {other.font}
+qlm::Grid::Grid(const qlm::Grid &other) : pos {other.pos}
 {
     for (int y = 0; y < rows; y++) 
     {
@@ -86,7 +86,7 @@ qlm::Cell qlm::Grid::IsGameOver(const Location move) const
     return winner;
 }
 
-void qlm::Grid::DrawGrid() const
+void qlm::Grid::DrawGrid(const Font& font) const
 {
     // Draw vertical lines
     for (int i = 1; i < cols; i++)
