@@ -1,8 +1,10 @@
 #include "layers/GameExtendLayer.hpp"
+#include "layers/GameBoardLayer.hpp"
+#include "TicTacToe.hpp"
 #include <random>
 
-qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& text_font, qlm::Grid& grid)
-        : text_font(text_font), width(width), height(height), game_grid(grid)
+qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& font, qlm::Grid& grid)
+        : Layer(font), width(width), height(height), game_grid(grid)
 {
     game_grid.round = 6;
     
@@ -157,10 +159,18 @@ void qlm::GameExtendLayer::ShiftGrid(const Direction dir)
 
 void qlm::GameExtendLayer::OnRender(const float ts)
 {
-    game_grid.DrawGrid();
+    game_grid.DrawGrid(font);
 }
 
-void qlm::GameExtendLayer::OnUpdate(GameState& game_status)
+void qlm::GameExtendLayer::OnTransition(qlm::GameContext& game_context)
+{
+    if (game_context.status == Status::GAME_BOARD)
+    {
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+    }
+}
+
+void qlm::GameExtendLayer::OnUpdate(GameContext& game_context)
 {
     if (!moved) {
         RemoveMoves(extend_direction);
@@ -168,8 +178,8 @@ void qlm::GameExtendLayer::OnUpdate(GameState& game_status)
         ShiftGrid(extend_direction);
     } else {
         // Extension complete, transition back to game board
-        game_status.status = qlm::Status::GAME_BOARD;
+        game_context.status = qlm::Status::GAME_BOARD;
         return;
     }
-    game_status.status = qlm::Status::NO_CHANGE;
+    game_context.status = qlm::Status::NO_CHANGE;
 }

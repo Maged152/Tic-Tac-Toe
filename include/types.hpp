@@ -84,12 +84,22 @@ namespace qlm
             void Print() const;
     };
 
-    struct GameState
+    struct GameContext
     {
+        int width;
+        int height;
+        Grid grid;
+        Font font;
         Status status = Status::START_MENU;
         GameType game_type = GameType::SINGLE_PLAYER;
         Cell player_piece = Cell::EMPTY;
         Cell winner = Cell::EMPTY;
+
+        GameContext(int w, int h, const Font& f) : width(w), height(h), grid(w, h), font(f)
+        {}
+
+        GameContext(int w, int h) : width(w), height(h), grid(w, h)
+        {}
 
         void Reset()
         {
@@ -98,19 +108,5 @@ namespace qlm
             player_piece = Cell::EMPTY;
             winner = Cell::EMPTY;
         }
-    };
-
-    struct GameContext
-    {
-        int width;
-        int height;
-        Grid grid;
-        Font font;
-
-        GameContext(int w, int h, const Font& f) : width(w), height(h), grid(w, h), font(f) 
-        {}
-
-        GameContext(int w, int h) : width(w), height(h), grid(w, h)
-        {}
     };
 }

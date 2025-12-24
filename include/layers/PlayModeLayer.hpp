@@ -12,14 +12,13 @@ namespace qlm
 
 		Rectangle single_button, multi_button;
 		Color single_color, multi_color;
-
-		Font font;
-		
+				
 	public:
 		PlayModeLayer(const int width, const int height, const Font& font);
 		virtual ~PlayModeLayer();
-		virtual void OnUpdate(GameState& game_status) override;
+		virtual void OnUpdate(GameContext& game_context) override;
 		virtual void OnRender(const float ts) override;
+		virtual void OnTransition(GameContext& game_context) override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const int displacement);

@@ -1,19 +1,22 @@
 #include "layers/GameBoardLayer.hpp"
+#include "layers/GameOverLayer.hpp"
+#include "layers/GameExtendLayer.hpp"
+#include "TicTacToe.hpp"
 #include <algorithm>
 
-qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, qlm::Grid& grid) : game_grid(grid)
+qlm::GameBoardLayer::GameBoardLayer(const int width, const int height, const Font& font, qlm::Grid& grid) : Layer(font), game_grid(grid)
 {}
 
 qlm::GameBoardLayer::~GameBoardLayer()
 {}
 
-void qlm::GameBoardLayer::IsGameOver(GameState &game_status)
+void qlm::GameBoardLayer::IsGameOver(GameContext &game_context)
 {
-    game_status.winner = game_grid.IsGameOver(game_grid.GetLastMove());
+    game_context.winner = game_grid.IsGameOver(game_grid.GetLastMove());
 
-    if (game_status.winner != Cell::EMPTY)
+    if (game_context.winner != Cell::EMPTY)
     {
-        game_status.status = Status::GAME_OVER;
+        game_context.status = Status::GAME_OVER;
     }
 }
 
@@ -23,7 +26,7 @@ qlm::Cell qlm::GameBoardLayer::Toggle(const qlm::Cell current)
     return current == Cell::X ? Cell::O : Cell::X;
 }
 
-void qlm::GameBoardLayer::MakeMove(qlm::GameState& game_status)
+void qlm::GameBoardLayer::MakeMove(qlm::GameContext& game_context)
 {
     hover_color = WHITE;
     // Get mouse position
@@ -129,12 +132,12 @@ qlm::MoveEvaluation qlm::GameBoardLayer::MiniMax(const qlm::Cell player, const q
     return out;
 }
 
-void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
+void qlm::GameBoardLayer::BestMove(qlm::GameContext &game_context)
 {
-    const auto best_move = MiniMax(Toggle(game_status.player_piece), game_grid.GetLastMove(), game_grid.round);
+    const auto best_move = MiniMax(Toggle(game_context.player_piece), game_grid.GetLastMove(), game_grid.round);
 
     // do the move
-    game_grid.Set(best_move.move.x, best_move.move.y, Toggle(game_status.player_piece));
+    game_grid.Set(best_move.move.x, best_move.move.y, Toggle(game_context.player_piece));
     game_grid.SetLastMove(best_move.move.x, best_move.move.y);
     game_grid.turn = Toggle(game_grid.turn);
     game_grid.round++;
@@ -142,7 +145,7 @@ void qlm::GameBoardLayer::BestMove(qlm::GameState &game_status)
 
 void qlm::GameBoardLayer::OnRender(const float ts)
 {
-    game_grid.DrawGrid();
+    game_grid.DrawGrid(font);
 
     if (hover_color.r != 255 || hover_color.g != 255 || hover_color.b != 255)
     {
@@ -150,27 +153,39 @@ void qlm::GameBoardLayer::OnRender(const float ts)
     }
 }
 
-void qlm::GameBoardLayer::OnUpdate(qlm::GameState &game_status)
+void qlm::GameBoardLayer::OnTransition(qlm::GameContext& game_context)
 {
-    game_status.status = Status::NO_CHANGE;
-    if (game_status.game_type == qlm::GameType::MULTI_PLAYER)
+    if (game_context.status == Status::GAME_EXTEND)
     {
-        MakeMove(game_status);
+        qlm::TicTacToe::active_layer = TransitionTo<GameExtendLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+    }
+    else if (game_context.status == Status::GAME_OVER)
+    {
+        qlm::TicTacToe::active_layer = TransitionTo<GameOverLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+    }
+}
+
+void qlm::GameBoardLayer::OnUpdate(qlm::GameContext &game_context)
+{
+    game_context.status = Status::NO_CHANGE;
+    if (game_context.game_type == qlm::GameType::MULTI_PLAYER)
+    {
+        MakeMove(game_context);
     }
     else
     {
-        if (game_grid.turn == game_status.player_piece) MakeMove(game_status);
-        else BestMove(game_status);
+        if (game_grid.turn == game_context.player_piece) MakeMove(game_context);
+        else BestMove(game_context);
     }
     
     if (game_grid.round > 4)
     {
-        IsGameOver(game_status);
+        IsGameOver(game_context);
 
         // check for draw
-        if (game_grid.round == 9 && game_status.status != Status::GAME_OVER)
+        if (game_grid.round == 9 && game_context.status != Status::GAME_OVER)
         {
-            game_status.status = game_status.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
+            game_context.status = game_context.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
         }
     }
 }

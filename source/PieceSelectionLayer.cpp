@@ -1,9 +1,11 @@
 #include "layers/PieceSelectionLayer.hpp"
+#include "layers/GameBoardLayer.hpp"
+#include "TicTacToe.hpp"
 
 qlm::PieceSelectionLayer::PieceSelectionLayer(const int width, const int height, const Font& font)
     : x_button {width / 2.0f - button_width - 20, 250, button_width, button_height},
       o_button {width / 2.0f + 2, 250, button_width, button_height},
-      font(font),
+      Layer(font),
       x_color(qlm::glb::text_color),
       o_color(qlm::glb::text_color)
 {}
@@ -23,9 +25,17 @@ void qlm::PieceSelectionLayer::OnRender(const float ts)
     DrawButton(o_button, o_color, "O", RED);
 }
 
-void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
+void qlm::PieceSelectionLayer::OnTransition(qlm::GameContext& game_context)
 {
-    game_status.status = qlm::Status::NO_CHANGE;
+    if (game_context.status == Status::GAME_BOARD)
+    {
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+    }
+}
+
+void qlm::PieceSelectionLayer::OnUpdate(GameContext& game_context)
+{
+    game_context.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -36,8 +46,8 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
         x_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           game_status.status = Status::GAME_BOARD;
-           game_status.player_piece = Cell::X;
+           game_context.status = Status::GAME_BOARD;
+           game_context.player_piece = Cell::X;
         }
     }
     else
@@ -50,8 +60,8 @@ void qlm::PieceSelectionLayer::OnUpdate(GameState& game_status)
         o_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_status.status = Status::GAME_BOARD;
-            game_status.player_piece = Cell::O;
+            game_context.status = Status::GAME_BOARD;
+            game_context.player_piece = Cell::O;
         }
     }
     else

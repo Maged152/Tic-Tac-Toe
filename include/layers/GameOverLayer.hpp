@@ -17,14 +17,14 @@ namespace qlm
 
 		Grid& game_grid;
 
-		Font text_font;
 		int width, height;
 		
 	public:
-		GameOverLayer(const int width, const int height, const Font& text_font, Grid& grid);
+		GameOverLayer(const int width, const int height, const Font& font, Grid& grid);
 		virtual ~GameOverLayer();
-		virtual void OnUpdate(GameState& game_status) override;
+		virtual void OnUpdate(GameContext& game_context) override;
 		virtual void OnRender(const float ts) override;
+		virtual void OnTransition(GameContext& game_context) override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color);

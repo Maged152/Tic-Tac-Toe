@@ -8,13 +8,16 @@ namespace qlm
 {
    class Layer
 	{
-	private:
+	protected:
 		Font font;
+
 	public:
 		virtual ~Layer() = default;
-		virtual void OnUpdate(GameState& game_status) {}
+		Layer(const Font& f) : font(f) {}
+		Layer() {}
+		virtual void OnUpdate(GameContext& game_context) {}
 		virtual void OnRender(const float ts) {}
-		virtual void OnTransition(GameState& game_status) {}
+		virtual void OnTransition(GameContext& game_context) {}
 		template<std::derived_from<Layer> T, typename... Args>
 		std::unique_ptr<Layer> TransitionTo(Args&&... args)
 		{
