@@ -67,20 +67,14 @@ qlm::Cell qlm::Grid::IsGameOver(const Location move) const
         winner = this->Get(x, 0);
     }
     // Check the main diagonal if the last move is on it
-    else if (x == y)
+    else if ((x == y) && (this->Get(0, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(2, 2)))
     {
-        if (this->Get(0, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(2, 2))
-        {
-            winner = this->Get(0, 0);
-        }
+        winner = this->Get(0, 0);    
     }
     // Check the anti-diagonal if the last move is on it
-    else if (y + x == 2)
+    else if ((y + x == 2 ) && (this->Get(2, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(0, 2)))
     {
-        if (this->Get(2, 0) == this->Get(1, 1) && this->Get(1, 1) == this->Get(0, 2))
-        {
-            winner = this->Get(2, 0);
-        }
+        winner = this->Get(2, 0);
     }
 
     return winner;
