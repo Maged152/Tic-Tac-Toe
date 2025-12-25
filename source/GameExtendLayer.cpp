@@ -162,15 +162,15 @@ void qlm::GameExtendLayer::OnRender(const float ts)
     game_grid.DrawGrid(font);
 }
 
-void qlm::GameExtendLayer::OnTransition(qlm::GameContext& game_context)
+void qlm::GameExtendLayer::OnTransition()
 {
-    if (game_context.status == Status::GAME_BOARD)
+    if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
 }
 
-void qlm::GameExtendLayer::OnUpdate(GameContext& game_context)
+void qlm::GameExtendLayer::OnUpdate()
 {
     if (!moved) {
         RemoveMoves(extend_direction);
@@ -178,8 +178,8 @@ void qlm::GameExtendLayer::OnUpdate(GameContext& game_context)
         ShiftGrid(extend_direction);
     } else {
         // Extension complete, transition back to game board
-        game_context.status = qlm::Status::GAME_BOARD;
+        qlm::TicTacToe::game_context.status = qlm::Status::GAME_BOARD;
         return;
     }
-    game_context.status = qlm::Status::NO_CHANGE;
+    qlm::TicTacToe::game_context.status = qlm::Status::NO_CHANGE;
 }

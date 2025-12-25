@@ -44,25 +44,25 @@ void qlm::GameOverLayer::OnRender(const float ts)
     DrawButton(main_button, main_color, "Main Menu", RED);
 }
 
-void qlm::GameOverLayer::OnTransition(qlm::GameContext& game_context)
+void qlm::GameOverLayer::OnTransition()
 {
-    if (game_context.status == Status::GAME_BOARD)
+    if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
-    else if (game_context.status == Status::START_MENU)
+    else if (qlm::TicTacToe::game_context.status == Status::START_MENU)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<MainMenuLayer>(game_context.width, game_context.height, game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<MainMenuLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
     }
 }
 
-void qlm::GameOverLayer::OnUpdate(GameContext& game_context)
+void qlm::GameOverLayer::OnUpdate()
 {
-    game_context.status = qlm::Status::NO_CHANGE;
+    qlm::TicTacToe::game_context.status = qlm::Status::NO_CHANGE;
 
-    if (game_context.winner == Cell::X)
+    if (qlm::TicTacToe::game_context.winner == Cell::X)
         result_text = "Player X Wins!";
-    else if (game_context.winner == Cell::O)
+    else if (qlm::TicTacToe::game_context.winner == Cell::O)
         result_text = "Player O Wins!";
     else
         result_text = "It's a Draw!";
@@ -76,7 +76,7 @@ void qlm::GameOverLayer::OnUpdate(GameContext& game_context)
         replay_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           game_context.status = Status::GAME_BOARD;
+           qlm::TicTacToe::game_context.status = Status::GAME_BOARD;
         }
     }
     else
@@ -89,7 +89,7 @@ void qlm::GameOverLayer::OnUpdate(GameContext& game_context)
         main_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_context.status = Status::START_MENU;
+            qlm::TicTacToe::game_context.status = Status::START_MENU;
         }
     }
     else

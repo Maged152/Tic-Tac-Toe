@@ -25,17 +25,17 @@ void qlm::PieceSelectionLayer::OnRender(const float ts)
     DrawButton(o_button, o_color, "O", RED);
 }
 
-void qlm::PieceSelectionLayer::OnTransition(qlm::GameContext& game_context)
+void qlm::PieceSelectionLayer::OnTransition()
 {
-    if (game_context.status == Status::GAME_BOARD)
+    if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
 }
 
-void qlm::PieceSelectionLayer::OnUpdate(GameContext& game_context)
+void qlm::PieceSelectionLayer::OnUpdate()
 {
-    game_context.status = qlm::Status::NO_CHANGE;
+    qlm::TicTacToe::game_context.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -46,8 +46,8 @@ void qlm::PieceSelectionLayer::OnUpdate(GameContext& game_context)
         x_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           game_context.status = Status::GAME_BOARD;
-           game_context.player_piece = Cell::X;
+           qlm::TicTacToe::game_context.status = Status::GAME_BOARD;
+           qlm::TicTacToe::game_context.player_piece = Cell::X;
         }
     }
     else
@@ -60,8 +60,8 @@ void qlm::PieceSelectionLayer::OnUpdate(GameContext& game_context)
         o_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_context.status = Status::GAME_BOARD;
-            game_context.player_piece = Cell::O;
+            qlm::TicTacToe::game_context.status = Status::GAME_BOARD;
+            qlm::TicTacToe::game_context.player_piece = Cell::O;
         }
     }
     else

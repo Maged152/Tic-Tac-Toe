@@ -153,39 +153,39 @@ void qlm::GameBoardLayer::OnRender(const float ts)
     }
 }
 
-void qlm::GameBoardLayer::OnTransition(qlm::GameContext& game_context)
+void qlm::GameBoardLayer::OnTransition()
 {
-    if (game_context.status == Status::GAME_EXTEND)
+    if (qlm::TicTacToe::game_context.status == Status::GAME_EXTEND)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameExtendLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameExtendLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
-    else if (game_context.status == Status::GAME_OVER)
+    else if (qlm::TicTacToe::game_context.status == Status::GAME_OVER)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameOverLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameOverLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
 }
 
-void qlm::GameBoardLayer::OnUpdate(qlm::GameContext &game_context)
+void qlm::GameBoardLayer::OnUpdate()
 {
-    game_context.status = Status::NO_CHANGE;
-    if (game_context.game_type == qlm::GameType::MULTI_PLAYER)
+    qlm::TicTacToe::game_context.status = Status::NO_CHANGE;
+    if (qlm::TicTacToe::game_context.game_type == qlm::GameType::MULTI_PLAYER)
     {
-        MakeMove(game_context);
+        MakeMove(qlm::TicTacToe::game_context);
     }
     else
     {
-        if (game_grid.turn == game_context.player_piece) MakeMove(game_context);
-        else BestMove(game_context);
+        if (game_grid.turn == qlm::TicTacToe::game_context.player_piece) MakeMove(qlm::TicTacToe::game_context);
+        else BestMove(qlm::TicTacToe::game_context);
     }
     
     if (game_grid.round > 4)
     {
-        IsGameOver(game_context);
+        IsGameOver(qlm::TicTacToe::game_context);
 
         // check for draw
-        if (game_grid.round == 9 && game_context.status != Status::GAME_OVER)
+        if (game_grid.round == 9 && qlm::TicTacToe::game_context.status != Status::GAME_OVER)
         {
-            game_context.status = game_context.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
+            qlm::TicTacToe::game_context.status = qlm::TicTacToe::game_context.game_type == GameType::MULTI_PLAYER ? Status::GAME_EXTEND : Status::GAME_OVER;
         }
     }
 }

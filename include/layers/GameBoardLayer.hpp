@@ -15,9 +15,9 @@ namespace qlm
 	public:
 		GameBoardLayer(const int width, const int height, const Font& font, Grid &grid);
 		virtual ~GameBoardLayer();
-		virtual void OnUpdate(GameContext& game_context) override;
+		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;
-		virtual void OnTransition(GameContext& game_context) override;
+		virtual void OnTransition() override;
 
 	private:
 		void MakeMove(GameContext& game_context);

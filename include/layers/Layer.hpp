@@ -15,9 +15,9 @@ namespace qlm
 		virtual ~Layer() = default;
 		Layer(const Font& f) : font(f) {}
 		Layer() {}
-		virtual void OnUpdate(GameContext& game_context) {}
+		virtual void OnUpdate() {}
 		virtual void OnRender(const float ts) {}
-		virtual void OnTransition(GameContext& game_context) {}
+		virtual void OnTransition() {}
 		template<std::derived_from<Layer> T, typename... Args>
 		std::unique_ptr<Layer> TransitionTo(Args&&... args)
 		{

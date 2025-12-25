@@ -26,21 +26,21 @@ void qlm::PlayModeLayer::OnRender(const float ts)
     DrawButton(multi_button, multi_color, "Multi Player", 50);
 }
 
-void qlm::PlayModeLayer::OnTransition(qlm::GameContext& game_context)
+void qlm::PlayModeLayer::OnTransition()
 {
-    if (game_context.status == Status::GAME_BOARD)
+    if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(game_context.width, game_context.height, game_context.font, game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
     }
-    else if (game_context.status == Status::PIECE_SELECTION)
+    else if (qlm::TicTacToe::game_context.status == Status::PIECE_SELECTION)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<qlm::PieceSelectionLayer>(game_context.width, game_context.height, game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<qlm::PieceSelectionLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
     }
 }
 
-void qlm::PlayModeLayer::OnUpdate(GameContext& game_context)
+void qlm::PlayModeLayer::OnUpdate()
 {
-    game_context.status = qlm::Status::NO_CHANGE;
+    qlm::TicTacToe::game_context.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -51,8 +51,8 @@ void qlm::PlayModeLayer::OnUpdate(GameContext& game_context)
         single_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_context.status = Status::PIECE_SELECTION;
-            game_context.game_type = GameType::SINGLE_PLAYER;
+            qlm::TicTacToe::game_context.status = Status::PIECE_SELECTION;
+            qlm::TicTacToe::game_context.game_type = GameType::SINGLE_PLAYER;
         }
     }
     else
@@ -65,8 +65,8 @@ void qlm::PlayModeLayer::OnUpdate(GameContext& game_context)
         multi_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_context.status = Status::GAME_BOARD;
-            game_context.game_type = GameType::MULTI_PLAYER;
+            qlm::TicTacToe::game_context.status = Status::GAME_BOARD;
+            qlm::TicTacToe::game_context.game_type = GameType::MULTI_PLAYER;
         }
     }
     else

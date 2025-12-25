@@ -11,8 +11,9 @@
 #include <algorithm>
 
 std::unique_ptr<qlm::Layer> qlm::TicTacToe::active_layer = nullptr;
+qlm::GameContext  qlm::TicTacToe::game_context = qlm::GameContext(qlm::TicTacToe::width, qlm::TicTacToe::height);
 
-qlm::TicTacToe::TicTacToe() : game_context(width, height)
+qlm::TicTacToe::TicTacToe()
 {}
 
 qlm::TicTacToe::~TicTacToe()
@@ -24,6 +25,7 @@ qlm::TicTacToe::~TicTacToe()
 void qlm::TicTacToe::InitTextures()
 {
     game_context.font = LoadFont("resources/orange juice 2.0.ttf");
+    //grid_font = LoadFont("resources/Surfing Capital.ttf");
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -50,9 +52,9 @@ void qlm::TicTacToe::Start(int fps, const char *name)
 			float time_step = std::clamp(current_time - last_time, 0.001f, 0.1f);
 			last_time = current_time;
 
-            active_layer->OnUpdate(game_context);
+            active_layer->OnUpdate();
             active_layer->OnRender(time_step);
-            active_layer->OnTransition(game_context);
+            active_layer->OnTransition();
  
         EndDrawing();
     }

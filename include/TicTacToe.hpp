@@ -7,9 +7,6 @@ namespace qlm
 {
     class TicTacToe
     {
-        private:
-            GameContext game_context;
-
         public:
             TicTacToe();
             ~TicTacToe();
@@ -18,6 +15,7 @@ namespace qlm
             static constexpr int width = 1000;
             static constexpr int height = 600;
             static std::unique_ptr<Layer> active_layer;
+            static GameContext game_context;
 
         private:
             void InitTextures();

@@ -25,21 +25,21 @@ void qlm::MainMenuLayer::OnRender(const float ts)
     DrawButton(exit_button, exit_color, "EXIT", RED, 70);
 }
 
-void qlm::MainMenuLayer::OnTransition(GameContext& game_context)
+void qlm::MainMenuLayer::OnTransition()
 {
-    if (game_context.status == Status::PLAY_MODE)
+    if (qlm::TicTacToe::game_context.status == Status::PLAY_MODE)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<PlayModeLayer>(game_context.width, game_context.height, game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<PlayModeLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
     }
-    else if (game_context.status == Status::GAME_CLOSED)
+    else if (qlm::TicTacToe::game_context.status == Status::GAME_CLOSED)
     {
         CloseWindow();
     }
 }
 
-void qlm::MainMenuLayer::OnUpdate(GameContext& game_context)
+void qlm::MainMenuLayer::OnUpdate()
 {
-    game_context.status = qlm::Status::NO_CHANGE;
+    qlm::TicTacToe::game_context.status = qlm::Status::NO_CHANGE;
 
     // Get mouse position
     Vector2 mousePoint = GetMousePosition();
@@ -50,7 +50,7 @@ void qlm::MainMenuLayer::OnUpdate(GameContext& game_context)
         start_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-           game_context.status = Status::PLAY_MODE;
+           qlm::TicTacToe::game_context.status = Status::PLAY_MODE;
         }
     }
     else
@@ -63,7 +63,7 @@ void qlm::MainMenuLayer::OnUpdate(GameContext& game_context)
         exit_color = qlm::glb::hover;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            game_context.status = Status::GAME_CLOSED;
+            qlm::TicTacToe::game_context.status = Status::GAME_CLOSED;
         }
     }
     else

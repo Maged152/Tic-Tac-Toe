@@ -16,9 +16,9 @@ namespace qlm
 	public:
 		MainMenuLayer(const int width, const int height, const Font& font);
 		virtual ~MainMenuLayer();
-		virtual void OnUpdate(GameContext& game_context) override;
+		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;
-		virtual void OnTransition(GameContext& game_context) override;
+		virtual void OnTransition() override;
 
 	private:
 		void DrawButton(const Rectangle& button, const Color button_color, const char* text, const Color text_color, const int displacement);
