@@ -3,10 +3,9 @@
 #include "TicTacToe.hpp"
 #include <random>
 
-qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const Font& font, qlm::Grid& grid)
-        : Layer(font), width(width), height(height), game_grid(grid)
+qlm::GameExtendLayer::GameExtendLayer()
 {
-    game_grid.round = 6;
+    qlm::TicTacToe::game_context.grid.round = 6;
     
     // randomly choose a direction if needed
     std::random_device rd;
@@ -17,7 +16,7 @@ qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const F
     std::uniform_int_distribution<> dis_2(0, 1);
 
     // correct the last move position & Find extend direction based on last move
-    Location last_move = game_grid.GetLastMove();
+    Location last_move = qlm::TicTacToe::game_context.grid.GetLastMove();
 
     if (last_move.x == 0 && last_move.y == 0) 
     {
@@ -64,16 +63,16 @@ qlm::GameExtendLayer::GameExtendLayer(const int width, const int height, const F
     switch (extend_direction) 
     {
         case Direction::RIGHT:
-            game_grid.SetLastMove(last_move.x + 1, last_move.y);
+            qlm::TicTacToe::game_context.grid.SetLastMove(last_move.x + 1, last_move.y);
             break;
         case Direction::LEFT:
-            game_grid.SetLastMove(last_move.x - 1, last_move.y);
+            qlm::TicTacToe::game_context.grid.SetLastMove(last_move.x - 1, last_move.y);
             break;
         case Direction::UP:
-            game_grid.SetLastMove(last_move.x, last_move.y - 1);
+            qlm::TicTacToe::game_context.grid.SetLastMove(last_move.x, last_move.y - 1);
             break;
         case Direction::DOWN:
-            game_grid.SetLastMove(last_move.x, last_move.y + 1);
+            qlm::TicTacToe::game_context.grid.SetLastMove(last_move.x, last_move.y + 1);
             break;
     };
 }
@@ -85,30 +84,30 @@ void qlm::GameExtendLayer::RemoveMoves(const Direction dir)
 {
     if (dir == Direction::LEFT)
     {
-        for (int y = 0; y < game_grid.rows; y++)
+        for (int y = 0; y < qlm::TicTacToe::game_context.grid.rows; y++)
         {
-            game_grid.Set(0, y, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(0, y, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::RIGHT)
     {
-        for (int y = 0; y < game_grid.rows; y++)
+        for (int y = 0; y < qlm::TicTacToe::game_context.grid.rows; y++)
         {
-            game_grid.Set(2, y, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(2, y, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::UP)
     {
-        for (int x = 0; x < game_grid.cols; x++)
+        for (int x = 0; x < qlm::TicTacToe::game_context.grid.cols; x++)
         {
-            game_grid.Set(x, 0, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(x, 0, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::DOWN)
     {
-        for (int x = 0; x < game_grid.cols; x++)
+        for (int x = 0; x < qlm::TicTacToe::game_context.grid.cols; x++)
         {
-            game_grid.Set(x, 2, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(x, 2, qlm::Cell::EMPTY);
         }
     }
 
@@ -119,38 +118,38 @@ void qlm::GameExtendLayer::ShiftGrid(const Direction dir)
 {
     if (dir == Direction::LEFT)
     {
-        for (int y = 0; y < game_grid.rows; y++)
+        for (int y = 0; y < qlm::TicTacToe::game_context.grid.rows; y++)
         {
-            game_grid.Set(0, y, game_grid.Get(1, y));
-            game_grid.Set(1, y, game_grid.Get(2, y));
-            game_grid.Set(2, y, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(0, y, qlm::TicTacToe::game_context.grid.Get(1, y));
+            qlm::TicTacToe::game_context.grid.Set(1, y, qlm::TicTacToe::game_context.grid.Get(2, y));
+            qlm::TicTacToe::game_context.grid.Set(2, y, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::RIGHT)
     {
-        for (int y = 0; y < game_grid.rows; y++)
+        for (int y = 0; y < qlm::TicTacToe::game_context.grid.rows; y++)
         {
-            game_grid.Set(2, y, game_grid.Get(1, y));
-            game_grid.Set(1, y, game_grid.Get(0, y));
-            game_grid.Set(0, y, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(2, y, qlm::TicTacToe::game_context.grid.Get(1, y));
+            qlm::TicTacToe::game_context.grid.Set(1, y, qlm::TicTacToe::game_context.grid.Get(0, y));
+            qlm::TicTacToe::game_context.grid.Set(0, y, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::UP)
     {
-        for (int x = 0; x < game_grid.cols; x++)
+        for (int x = 0; x < qlm::TicTacToe::game_context.grid.cols; x++)
         {
-            game_grid.Set(x, 0, game_grid.Get(x, 1));
-            game_grid.Set(x, 1, game_grid.Get(x, 2));
-            game_grid.Set(x, 2, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(x, 0, qlm::TicTacToe::game_context.grid.Get(x, 1));
+            qlm::TicTacToe::game_context.grid.Set(x, 1, qlm::TicTacToe::game_context.grid.Get(x, 2));
+            qlm::TicTacToe::game_context.grid.Set(x, 2, qlm::Cell::EMPTY);
         }
     }
     else if (dir == Direction::DOWN)
     {
-        for (int x = 0; x < game_grid.cols; x++)
+        for (int x = 0; x < qlm::TicTacToe::game_context.grid.cols; x++)
         {
-            game_grid.Set(x, 2, game_grid.Get(x, 1));
-            game_grid.Set(x, 1, game_grid.Get(x, 0));
-            game_grid.Set(x, 0, qlm::Cell::EMPTY);
+            qlm::TicTacToe::game_context.grid.Set(x, 2, qlm::TicTacToe::game_context.grid.Get(x, 1));
+            qlm::TicTacToe::game_context.grid.Set(x, 1, qlm::TicTacToe::game_context.grid.Get(x, 0));
+            qlm::TicTacToe::game_context.grid.Set(x, 0, qlm::Cell::EMPTY);
         }
     }
 
@@ -159,14 +158,14 @@ void qlm::GameExtendLayer::ShiftGrid(const Direction dir)
 
 void qlm::GameExtendLayer::OnRender(const float ts)
 {
-    game_grid.DrawGrid(font);
+    qlm::TicTacToe::game_context.grid.DrawGrid(qlm::TicTacToe::game_context.grid_font);
 }
 
 void qlm::GameExtendLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
     }
 }
 

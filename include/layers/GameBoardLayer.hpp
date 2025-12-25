@@ -7,13 +7,11 @@ namespace qlm
    class GameBoardLayer : public Layer
 	{
 	private:
-		Grid& game_grid;
-
 		Color hover_color = WHITE;
 		Rectangle hover_cell;
 		
 	public:
-		GameBoardLayer(const int width, const int height, const Font& font, Grid &grid);
+		GameBoardLayer();
 		virtual ~GameBoardLayer();
 		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;

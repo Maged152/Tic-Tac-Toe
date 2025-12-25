@@ -8,12 +8,8 @@ namespace qlm
 {
    class Layer
 	{
-	protected:
-		Font font;
-
 	public:
 		virtual ~Layer() = default;
-		Layer(const Font& f) : font(f) {}
 		Layer() {}
 		virtual void OnUpdate() {}
 		virtual void OnRender(const float ts) {}

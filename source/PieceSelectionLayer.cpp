@@ -2,10 +2,9 @@
 #include "layers/GameBoardLayer.hpp"
 #include "TicTacToe.hpp"
 
-qlm::PieceSelectionLayer::PieceSelectionLayer(const int width, const int height, const Font& font)
-    : x_button {width / 2.0f - button_width - 20, 250, button_width, button_height},
-      o_button {width / 2.0f + 2, 250, button_width, button_height},
-      Layer(font),
+qlm::PieceSelectionLayer::PieceSelectionLayer()
+    : x_button {qlm::TicTacToe::game_context.width / 2.0f - button_width - 20, 250, button_width, button_height},
+      o_button {qlm::TicTacToe::game_context.width / 2.0f + 2, 250, button_width, button_height},
       x_color(qlm::glb::text_color),
       o_color(qlm::glb::text_color)
 {}
@@ -16,7 +15,7 @@ qlm::PieceSelectionLayer::~PieceSelectionLayer()
 void qlm::PieceSelectionLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const Color text_color)
 {
     DrawRectangleRounded(button, 0.6f, 20, button_color);
-    DrawTextEx(font, text, {button.x + 130, button.y + 15}, 80, 10, text_color);
+    DrawTextEx(qlm::TicTacToe::game_context.font, text, {button.x + 130, button.y + 15}, 80, 10, text_color);
 }
 
 void qlm::PieceSelectionLayer::OnRender(const float ts)
@@ -29,7 +28,7 @@ void qlm::PieceSelectionLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
     }
 }
 

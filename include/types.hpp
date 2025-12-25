@@ -90,13 +90,11 @@ namespace qlm
         int height;
         Grid grid;
         Font font;
+        Font grid_font;
         Status status = Status::START_MENU;
         GameType game_type = GameType::SINGLE_PLAYER;
         Cell player_piece = Cell::EMPTY;
         Cell winner = Cell::EMPTY;
-
-        GameContext(int w, int h, const Font& f) : width(w), height(h), grid(w, h), font(f)
-        {}
 
         GameContext(int w, int h) : width(w), height(h), grid(w, h)
         {}

@@ -14,7 +14,7 @@ namespace qlm
 		Color x_color, o_color;
 		
 	public:
-		PieceSelectionLayer(const int width, const int height, const Font& font);
+		PieceSelectionLayer();
 		virtual ~PieceSelectionLayer();
 		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;

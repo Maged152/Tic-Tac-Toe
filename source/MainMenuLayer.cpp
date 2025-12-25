@@ -2,10 +2,9 @@
 #include "layers/PlayModeLayer.hpp"
 #include "TicTacToe.hpp"
 
-qlm::MainMenuLayer::MainMenuLayer(const int width, const int height, const Font& font)
-    : start_button {width / 2.0f - 170, 170, button_width, button_height},
-      exit_button {width / 2.0f - 170, 330, button_width, button_height},
-      Layer(font),
+qlm::MainMenuLayer::MainMenuLayer()
+    : start_button {qlm::TicTacToe::game_context.width / 2.0f - 170, 170, button_width, button_height},
+      exit_button {qlm::TicTacToe::game_context.width / 2.0f - 170, 330, button_width, button_height},
       start_color(qlm::glb::text_color),
       exit_color(qlm::glb::text_color)
 {}
@@ -16,7 +15,7 @@ qlm::MainMenuLayer::~MainMenuLayer()
 void qlm::MainMenuLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const Color text_color, const int displacement)
 {
     DrawRectangleRounded(button, 0.6f, 20, button_color);
-    DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, text_color);
+    DrawTextEx(qlm::TicTacToe::game_context.font, text, {button.x + displacement, button.y + 10}, 80, 10, text_color);
 }
 
 void qlm::MainMenuLayer::OnRender(const float ts)
@@ -29,7 +28,7 @@ void qlm::MainMenuLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::PLAY_MODE)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<PlayModeLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<PlayModeLayer>();
     }
     else if (qlm::TicTacToe::game_context.status == Status::GAME_CLOSED)
     {

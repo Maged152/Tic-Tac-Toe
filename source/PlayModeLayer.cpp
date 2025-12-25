@@ -3,10 +3,9 @@
 #include "layers/PlayModeLayer.hpp"
 #include "TicTacToe.hpp"
 
-qlm::PlayModeLayer::PlayModeLayer(const int width, const int height, const Font& font)
-    : single_button {width / 2.0f - button_width / 2, 170, button_width, button_height},
-      multi_button {width / 2.0f - button_width / 2, 330, button_width, button_height},
-      Layer(font),
+qlm::PlayModeLayer::PlayModeLayer()
+    : single_button {qlm::TicTacToe::game_context.width / 2.0f - button_width / 2, 170, button_width, button_height},
+      multi_button {qlm::TicTacToe::game_context.width / 2.0f - button_width / 2, 330, button_width, button_height},
       single_color(qlm::glb::text_color),
       multi_color(qlm::glb::text_color)
 {}
@@ -17,7 +16,7 @@ qlm::PlayModeLayer::~PlayModeLayer()
 void qlm::PlayModeLayer::DrawButton(const Rectangle &button,const Color button_color, const char *text, const int displacement)
 {
     DrawRectangleRounded(button, 0.6f, 20, button_color);
-    DrawTextEx(font, text, {button.x + displacement, button.y + 10}, 80, 10, YELLOW);
+    DrawTextEx(qlm::TicTacToe::game_context.font, text, {button.x + displacement, button.y + 10}, 80, 10, YELLOW);
 }
 
 void qlm::PlayModeLayer::OnRender(const float ts)
@@ -30,11 +29,11 @@ void qlm::PlayModeLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
     }
     else if (qlm::TicTacToe::game_context.status == Status::PIECE_SELECTION)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<qlm::PieceSelectionLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<qlm::PieceSelectionLayer>();
     }
 }
 

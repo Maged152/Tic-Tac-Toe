@@ -14,7 +14,7 @@ namespace qlm
 		Color single_color, multi_color;
 				
 	public:
-		PlayModeLayer(const int width, const int height, const Font& font);
+		PlayModeLayer();
 		virtual ~PlayModeLayer();
 		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;

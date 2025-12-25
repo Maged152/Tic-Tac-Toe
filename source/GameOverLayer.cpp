@@ -3,41 +3,37 @@
 #include "layers/MainMenuLayer.hpp"
 #include "TicTacToe.hpp"
 
-qlm::GameOverLayer::GameOverLayer(const int width, const int height, const Font& font, qlm::Grid& grid)
-        : replay_button {width / 2.0f - button_width - 20, height / 2.0f + 20, button_width, button_height},
-          main_button {width / 2.0f + 20, height / 2.0f + 20, button_width, button_height},
-          Layer(font),
+qlm::GameOverLayer::GameOverLayer()
+        : replay_button {qlm::TicTacToe::game_context.width / 2.0f - button_width - 20, qlm::TicTacToe::game_context.height / 2.0f + 20, button_width, button_height},
+          main_button {qlm::TicTacToe::game_context.width / 2.0f + 20, qlm::TicTacToe::game_context.height / 2.0f + 20, button_width, button_height},
           replay_color(qlm::glb::text_color),
-          main_color(qlm::glb::text_color),
-          width(width),
-          height(height),
-          game_grid(grid)
+          main_color(qlm::glb::text_color)
 {}
 
 qlm::GameOverLayer::~GameOverLayer()
 {
     // reset the grid
-    game_grid.Set(qlm::Cell::EMPTY);
-    game_grid.round = 0;
-    game_grid.turn = qlm::Cell::X;
+    qlm::TicTacToe::game_context.grid.Set(qlm::Cell::EMPTY);
+    qlm::TicTacToe::game_context.grid.round = 0;
+    qlm::TicTacToe::game_context.grid.turn = qlm::Cell::X;
 }
 
 void qlm::GameOverLayer::DrawButton(const Rectangle &button, const Color button_color, const char *text, const Color text_color)
 {
     DrawRectangleRounded(button, 0.4f, 10,  Fade(button_color, 0.7f));
-    Vector2 text_size = MeasureTextEx(font, text, 30, 5);
-    DrawTextEx(font, text, 
+    Vector2 text_size = MeasureTextEx(qlm::TicTacToe::game_context.font, text, 30, 5);
+    DrawTextEx(qlm::TicTacToe::game_context.font, text, 
                 {button.x + button.width / 2 - text_size.x / 2, button.y + button.height / 2 - text_size.y / 2}, 
                 30, 5, text_color);
 }
 
 void qlm::GameOverLayer::OnRender(const float ts)
 {
-    game_grid.DrawGrid(font);
+    qlm::TicTacToe::game_context.grid.DrawGrid(qlm::TicTacToe::game_context.grid_font);
 
     // Draw the result text
-    DrawTextEx(font, result_text.c_str(), 
-               {width / 2.0f - MeasureTextEx(font, result_text.c_str(), 50, 5).x / 2, height / 2.0f - 100}, 
+    DrawTextEx(qlm::TicTacToe::game_context.font, result_text.c_str(), 
+               {qlm::TicTacToe::game_context.width / 2.0f - MeasureTextEx(qlm::TicTacToe::game_context.font, result_text.c_str(), 50, 5).x / 2, qlm::TicTacToe::game_context.height / 2.0f - 100}, 
                50, 5, qlm::glb::hover);
         
     DrawButton(replay_button, replay_color, "Replay", GREEN);
@@ -48,11 +44,11 @@ void qlm::GameOverLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font, qlm::TicTacToe::game_context.grid);
+        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
     }
     else if (qlm::TicTacToe::game_context.status == Status::START_MENU)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<MainMenuLayer>(qlm::TicTacToe::game_context.width, qlm::TicTacToe::game_context.height, qlm::TicTacToe::game_context.font);
+        qlm::TicTacToe::active_layer = TransitionTo<MainMenuLayer>();
     }
 }
 

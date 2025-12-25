@@ -14,13 +14,9 @@ namespace qlm
 		Rectangle replay_button, main_button;
 		Color replay_color, main_color;
 		std::string result_text = "";
-
-		Grid& game_grid;
-
-		int width, height;
 		
 	public:
-		GameOverLayer(const int width, const int height, const Font& font, Grid& grid);
+		GameOverLayer();
 		virtual ~GameOverLayer();
 		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;

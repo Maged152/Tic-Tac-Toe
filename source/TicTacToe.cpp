@@ -19,13 +19,14 @@ qlm::TicTacToe::TicTacToe()
 qlm::TicTacToe::~TicTacToe()
 {
     UnloadFont(game_context.font);
+    UnloadFont(game_context.grid_font);
     CloseWindow();
 }
 
 void qlm::TicTacToe::InitTextures()
 {
     game_context.font = LoadFont("resources/orange juice 2.0.ttf");
-    //grid_font = LoadFont("resources/Surfing Capital.ttf");
+    game_context.grid_font = LoadFont("resources/Surfing Capital.ttf");
 }
 
 void qlm::TicTacToe::Start(int fps, const char *name)
@@ -36,7 +37,7 @@ void qlm::TicTacToe::Start(int fps, const char *name)
     InitTextures();
 
     // Start with Main Menu
-    active_layer = std::make_unique<MainMenuLayer>(width, height, game_context.font);
+    active_layer = std::make_unique<MainMenuLayer>();
     game_context.status = Status::NO_CHANGE;
 
     float last_time = GetTime();

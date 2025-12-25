@@ -14,7 +14,7 @@ namespace qlm
 		Color start_color, exit_color;
 		
 	public:
-		MainMenuLayer(const int width, const int height, const Font& font);
+		MainMenuLayer();
 		virtual ~MainMenuLayer();
 		virtual void OnUpdate() override;
 		virtual void OnRender(const float ts) override;
