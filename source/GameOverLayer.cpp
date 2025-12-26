@@ -44,11 +44,11 @@ void qlm::GameOverLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
+        qlm::TicTacToe::foreground_layer = TransitionTo<GameBoardLayer>();
     }
     else if (qlm::TicTacToe::game_context.status == Status::START_MENU)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<MainMenuLayer>();
+        qlm::TicTacToe::foreground_layer = TransitionTo<MainMenuLayer>();
     }
 }
 

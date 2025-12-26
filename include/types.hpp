@@ -91,7 +91,7 @@ namespace qlm
         Grid grid;
         Font font;
         Font grid_font;
-        Status status = Status::START_MENU;
+        Status status = Status::NO_CHANGE;
         GameType game_type = GameType::SINGLE_PLAYER;
         Cell player_piece = Cell::EMPTY;
         Cell winner = Cell::EMPTY;

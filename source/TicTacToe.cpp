@@ -5,13 +5,15 @@
 #include "layers/PieceSelectionLayer.hpp"
 #include "layers/GameOverLayer.hpp"
 #include "layers/GameExtendLayer.hpp"
+#include "layers/BackgroundLayer.hpp"
 #include <string>
 #include <cmath>
 #include <cassert>
 #include <algorithm>
 
-std::unique_ptr<qlm::Layer> qlm::TicTacToe::active_layer = nullptr;
-qlm::GameContext  qlm::TicTacToe::game_context = qlm::GameContext(qlm::TicTacToe::width, qlm::TicTacToe::height);
+qlm::GameContext qlm::TicTacToe::game_context = qlm::GameContext(qlm::TicTacToe::width, qlm::TicTacToe::height);
+std::unique_ptr<qlm::Layer> qlm::TicTacToe::foreground_layer = std::make_unique<MainMenuLayer>();
+std::unique_ptr<qlm::Layer> qlm::TicTacToe::background_layer = std::make_unique<BackgroundLayer>();
 
 qlm::TicTacToe::TicTacToe()
 {}
@@ -36,26 +38,25 @@ void qlm::TicTacToe::Start(int fps, const char *name)
 
     InitTextures();
 
-    // Start with Main Menu
-    active_layer = std::make_unique<MainMenuLayer>();
-    game_context.status = Status::NO_CHANGE;
-
     float last_time = GetTime();
 
     // game loop
     while(!WindowShouldClose())
     {
         BeginDrawing();
-            ClearBackground(qlm::glb::back_ground);
-            DrawTextEx(game_context.font, "XO GAME", {width / 2 - 200, 20}, 80, 10, qlm::glb::text_color);
-
             float current_time = GetTime();
 			float time_step = std::clamp(current_time - last_time, 0.001f, 0.1f);
 			last_time = current_time;
 
-            active_layer->OnUpdate();
-            active_layer->OnRender(time_step);
-            active_layer->OnTransition();
+            // background layer
+            background_layer->OnUpdate();
+            background_layer->OnRender(time_step);
+            background_layer->OnTransition();
+
+            // foreground layer
+            foreground_layer->OnUpdate();
+            foreground_layer->OnRender(time_step);
+            foreground_layer->OnTransition();
  
         EndDrawing();
     }

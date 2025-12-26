@@ -28,7 +28,7 @@ void qlm::MainMenuLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::PLAY_MODE)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<PlayModeLayer>();
+        qlm::TicTacToe::foreground_layer = TransitionTo<PlayModeLayer>();
     }
     else if (qlm::TicTacToe::game_context.status == Status::GAME_CLOSED)
     {

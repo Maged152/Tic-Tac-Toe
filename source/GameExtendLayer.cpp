@@ -165,7 +165,7 @@ void qlm::GameExtendLayer::OnTransition()
 {
     if (qlm::TicTacToe::game_context.status == Status::GAME_BOARD)
     {
-        qlm::TicTacToe::active_layer = TransitionTo<GameBoardLayer>();
+        qlm::TicTacToe::foreground_layer = TransitionTo<GameBoardLayer>();
     }
 }
 
